@@ -1,0 +1,126 @@
+export const products = [
+  {
+    id: 1,
+    slug: "solstice-lounge-chair",
+    series: "Craftsman Series",
+    name: "Solstice Lounge Chair",
+    price: 2450,
+    material: "Natural Ash / Ivory Boucle",
+    category: "Sofas & Lounge",
+    badge: "In Stock",
+    image:
+      "https://images.unsplash.com/photo-1567538096630-e0c55bd6374c?w=900&q=80",
+    frameFinishes: ["#4d3a2d", "#181818", "#d4c28f", "#8f4b18"],
+    upholstery: ["#f0ece6", "#3a3a3a", "#7a5645", "#8f7b67"],
+    dimensions: 'W 86cm x D 83cm x H 74cm',
+    weight: "24kg",
+    leadTime: "6-8 weeks",
+    summary:
+      "A sculptural lounge chair with softened edges, tailored upholstery, and a warm timber frame designed for quiet reading corners.",
+    imageFit: "contain",
+  },
+  {
+    id: 2,
+    slug: "meridian-side-table",
+    series: "Stone Objects",
+    name: "Meridian Side Table",
+    price: 1180,
+    material: "Honed Travertine",
+    category: "Coffee Tables",
+    badge: "In Stock",
+    image:
+      "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=900&q=80",
+    frameFinishes: ["#d7ccb9", "#b6a38c", "#8d7967", "#4a4138"],
+    upholstery: ["#f4f0eb", "#d6d0ca", "#a39386", "#76685b"],
+    dimensions: 'W 48cm x D 48cm x H 54cm',
+    weight: "18kg",
+    leadTime: "4-6 weeks",
+    summary:
+      "A compact side table carved from travertine with crisp detailing and a softly honed surface that grounds lounge settings.",
+    imageFit: "contain",
+  },
+  {
+    id: 3,
+    slug: "aura-modular-sofa",
+    series: "Residence Line",
+    name: "Aura Modular Sofa",
+    price: 5200,
+    material: "Charcoal Kvadrat Wool",
+    category: "Sofas & Lounge",
+    badge: "In Stock",
+    image:
+      "https://images.unsplash.com/photo-1493663284031-b7e3aefcae8e?w=900&q=80",
+    frameFinishes: ["#2d2c2b", "#5c5147", "#b7aa96", "#8c654d"],
+    upholstery: ["#efede8", "#515151", "#7b6358", "#938272"],
+    dimensions: 'W 274cm x D 96cm x H 70cm',
+    weight: "74kg",
+    leadTime: "8-10 weeks",
+    summary:
+      "Deep, modular seating with tailored seams and architectural proportions made for layered living rooms and open-plan homes.",
+    imageFit: "contain",
+  },
+  {
+    id: 4,
+    slug: "obelisk-floor-lamp",
+    series: "Atmosphere Collection",
+    name: "Obelisk Floor Lamp",
+    price: 890,
+    material: "Oxidized Steel / Washi Paper",
+    category: "Storage & Media",
+    badge: "In Stock",
+    image:
+      "https://images.unsplash.com/photo-1507473885765-e6ed057f782c?w=900&q=80",
+    frameFinishes: ["#1f1f1f", "#5a4e43", "#d6c39c", "#83511d"],
+    upholstery: ["#f7f6f2", "#dbd4c8", "#8e7b6b", "#615449"],
+    dimensions: 'W 42cm x D 42cm x H 162cm',
+    weight: "9kg",
+    leadTime: "3-5 weeks",
+    summary:
+      "A tall floor lamp with a slim steel structure and warm diffused glow that brings softness to structured interiors.",
+    imageFit: "contain",
+  },
+  {
+    id: 5,
+    slug: "zenith-coffee-table",
+    series: "Crafted Core",
+    name: "Zenith Coffee Table",
+    price: 3100,
+    material: "Solid Walnut",
+    category: "Coffee Tables",
+    badge: "In Stock",
+    image:
+      "https://images.unsplash.com/photo-1506439773649-6e0eb8cfb237?w=900&q=80",
+    frameFinishes: ["#3b2a22", "#181818", "#d5c07f", "#8b5624"],
+    upholstery: ["#f2efea", "#cbc3b6", "#8e7665", "#544840"],
+    dimensions: 'W 138cm x D 74cm x H 32cm',
+    weight: "31kg",
+    leadTime: "6-8 weeks",
+    summary:
+      "A low sculpted coffee table in walnut with generous edges and subtle joinery details that celebrate the timber grain.",
+    imageFit: "contain",
+  },
+  {
+    id: 6,
+    slug: "lyra-lounge-chair",
+    series: "Craftsman Series",
+    name: "Lyra Lounge Chair",
+    price: 2840,
+    material: "Oiled Oak / Premium Boucle",
+    category: "Chairs",
+    badge: "In Stock",
+    image:
+      "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=900&q=80",
+    frameFinishes: ["#5b4534", "#171717", "#cbbb84", "#9a5616"],
+    upholstery: ["#f4f1ea", "#3a3a3a", "#765647", "#8d7866"],
+    dimensions: 'W 80cm x D 83cm x H 74cm',
+    weight: "24kg",
+    leadTime: "6-8 weeks",
+    summary:
+      "A low lounge chair with a deep seat, exposed timber arms, and plush upholstery inspired by quiet gallery interiors.",
+    imageFit: "contain",
+  },
+];
+
+export function getProductBySlug(slug) {
+  return products.find((product) => product.slug === slug);
+}

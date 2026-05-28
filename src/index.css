@@ -1,0 +1,135 @@
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600&family=DM+Sans:wght@300;400;500;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --text: #6b655d;
+  --text-h: #1a1a1a;
+  --bg: #f5f3ef;
+  --border: #e0dbd2;
+  --surface: #f8f6f2;
+  --sans: "DM Sans", system-ui, sans-serif;
+  --heading: "Cormorant Garamond", Georgia, serif;
+  --mono: ui-monospace, Consolas, monospace;
+
+  font: 18px/145% var(--sans);
+  letter-spacing: 0.01em;
+  color: var(--text);
+  background: var(--bg);
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+@media (max-width: 1024px) {
+  :root {
+    font-size: 16px;
+  }
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  min-height: 100vh;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--sans);
+}
+
+a {
+  color: inherit;
+}
+
+.font-cormorant {
+  font-family: var(--heading);
+}
+
+.font-dmsans {
+  font-family: var(--sans);
+}
+
+.header-link {
+  position: relative;
+  padding-bottom: 0.45rem;
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: #726c64;
+  transition: color 200ms ease;
+}
+
+.header-link::after {
+  content: "";
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: 1px;
+  transform: scaleX(0);
+  transform-origin: left;
+  background: #1a1a1a;
+  transition: transform 200ms ease;
+}
+
+.header-link:hover,
+.header-link-active {
+  color: #1a1a1a;
+}
+
+.header-link:hover::after,
+.header-link-active::after {
+  transform: scaleX(1);
+}
+
+.collection-sidebar {
+  border: 1px solid #e4ddd2;
+  border-radius: 28px;
+  background: rgba(248, 246, 242, 0.9);
+  padding: 1.5rem;
+  box-shadow: 0 24px 60px rgba(26, 26, 26, 0.04);
+}
+
+.price-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 2px;
+  outline: none;
+  cursor: pointer;
+}
+
+.price-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 14px;
+  height: 14px;
+  border: 2px solid #f5f3ef;
+  border-radius: 999px;
+  background: #1a1a1a;
+  box-shadow: 0 0 0 1px #1a1a1a;
+  cursor: pointer;
+}
+
+.price-slider::-moz-range-thumb {
+  width: 14px;
+  height: 14px;
+  border: 2px solid #f5f3ef;
+  border-radius: 999px;
+  background: #1a1a1a;
+  box-shadow: 0 0 0 1px #1a1a1a;
+  cursor: pointer;
+}
+
+.product-card:hover .card-img-wrap {
+  transform: translateY(-3px);
+}
+
+.product-card:hover .card-img-wrap img {
+  transform: scale(1.03);
+}
