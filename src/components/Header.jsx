@@ -1,18 +1,15 @@
 import { useEffect, useState } from "react";
 import { NavLink } from "react-router-dom";
-import { Layers, LogOut, Menu, ShoppingBag, User, X } from "lucide-react";
-import { useAuth } from "../context/useAuth";
+import { Menu, ShoppingBag, X } from "lucide-react";
 
 const menuItems = [
   { label: "The Edit", to: "/" },
   { label: "Atelier", to: "/products" },
-  { label: "Studio", to: "/workspaces", icon: Layers },
 ];
 
 export default function Header() {
   const [showHeader, setShowHeader] = useState(true);
   const [mobileOpen, setMobileOpen] = useState(false);
-  const { signOut, user } = useAuth();
 
   useEffect(() => {
     let lastScrollY = 0;
@@ -81,20 +78,6 @@ export default function Header() {
             <span className="hidden border-b border-[#1a1a1a] pb-1 text-[11px] uppercase tracking-[0.28em] text-[#5f5a53] lg:inline-block">
               Crafted Interiors
             </span>
-            {!user && (
-              <NavLink
-                to="/login"
-                className={({ isActive }) =>
-                  `hidden rounded-full border px-4 py-2 text-[10px] font-medium uppercase tracking-[0.18em] transition-colors duration-200 sm:inline-flex ${
-                    isActive
-                      ? "border-[#1a1a1a] bg-[#1a1a1a] text-[#f5f3ef]"
-                      : "border-[#d8d0c4] text-[#1a1a1a] hover:bg-[#1a1a1a] hover:text-[#f5f3ef]"
-                  }`
-                }
-              >
-                Login
-              </NavLink>
-            )}
             <button
               type="button"
               className="rounded-full border border-[#d8d0c4] p-2 text-[#1a1a1a] transition-colors duration-200 hover:bg-[#1a1a1a] hover:text-[#f5f3ef]"
@@ -102,23 +85,6 @@ export default function Header() {
             >
               <ShoppingBag size={17} strokeWidth={1.8} />
             </button>
-            <NavLink
-              to={user ? "/account" : "/login"}
-              className="rounded-full border border-[#d8d0c4] p-2 text-[#1a1a1a] transition-colors duration-200 hover:bg-[#1a1a1a] hover:text-[#f5f3ef]"
-              aria-label="Account"
-            >
-              <User size={17} strokeWidth={1.8} />
-            </NavLink>
-            {user && (
-              <button
-                type="button"
-                onClick={() => signOut()}
-                className="hidden rounded-full border border-[#d8d0c4] p-2 text-[#1a1a1a] transition-colors duration-200 hover:bg-[#1a1a1a] hover:text-[#f5f3ef] md:flex"
-                aria-label="Logout"
-              >
-                <LogOut size={17} strokeWidth={1.8} />
-              </button>
-            )}
 
             {/* Hamburger – mobile only */}
             <button
@@ -188,34 +154,14 @@ export default function Header() {
             ))}
           </nav>
 
-          <div className="border-t border-[#e0dbd2] px-4 py-6 space-y-3">
-            {!user ? (
-              <>
-                <NavLink
-                  to="/login"
-                  onClick={() => setMobileOpen(false)}
-                  className="flex w-full items-center justify-center rounded-full border border-[#1a1a1a] bg-[#1a1a1a] px-5 py-3 text-[11px] font-medium uppercase tracking-[0.18em] text-[#f5f3ef] transition-colors hover:bg-transparent hover:text-[#1a1a1a]"
-                >
-                  Login
-                </NavLink>
-                <NavLink
-                  to="/register"
-                  onClick={() => setMobileOpen(false)}
-                  className="flex w-full items-center justify-center rounded-full border border-[#d8d0c4] px-5 py-3 text-[11px] font-medium uppercase tracking-[0.18em] text-[#1a1a1a] transition-colors hover:bg-[#1a1a1a] hover:text-[#f5f3ef]"
-                >
-                  Register
-                </NavLink>
-              </>
-            ) : (
-              <button
-                type="button"
-                onClick={() => { signOut(); setMobileOpen(false); }}
-                className="flex w-full items-center justify-center gap-2 rounded-full border border-[#d8d0c4] px-5 py-3 text-[11px] font-medium uppercase tracking-[0.18em] text-[#1a1a1a] transition-colors hover:bg-[#1a1a1a] hover:text-[#f5f3ef]"
-              >
-                <LogOut size={14} />
-                Logout
-              </button>
-            )}
+          <div className="border-t border-[#e0dbd2] px-4 py-6">
+            <button
+              type="button"
+              onClick={() => setMobileOpen(false)}
+              className="flex w-full items-center justify-center rounded-full border border-[#1a1a1a] bg-[#1a1a1a] px-5 py-3 text-[11px] font-medium uppercase tracking-[0.18em] text-[#f5f3ef] transition-colors hover:bg-transparent hover:text-[#1a1a1a]"
+            >
+              Close
+            </button>
           </div>
 
           <p className="px-8 text-[10px] uppercase tracking-[0.28em] text-[#9f9790]">

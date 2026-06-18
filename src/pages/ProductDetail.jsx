@@ -10,7 +10,9 @@ import { getProductBySlug, products } from "../data/products";
 
 // GLB model imports
 import couchModel        from "../assets/couch1.glb";
+import couch2Model       from "../assets/couch.glb";
 import tableModel        from "../assets/table.glb";
+import table1Model       from "../assets/table1.glb";
 import coffeeTableModel  from "../assets/coffee_table.glb";
 import bedModel          from "../assets/bed.glb";
 import bed1Model         from "../assets/bed1.glb";
@@ -26,7 +28,9 @@ import diningTable2Model from "../assets/dining table2.glb";
 
 const MODEL_MAP = {
   sofa:      couchModel,
+  sofa2:     couch2Model,
   table:     tableModel,
+  table1:    table1Model,
   coffeetbl: coffeeTableModel,
   bed:       bedModel,
   bed1:      bed1Model,
@@ -62,7 +66,7 @@ function Model3DViewer({ modelId, className = "" }) {
     const w = container.clientWidth  || 800;
     const h = container.clientHeight || 600;
 
-    const renderer = new THREE.WebGLRenderer({ antialias: true });
+    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, logarithmicDepthBuffer: true });
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     renderer.setSize(w, h);
     renderer.outputColorSpace    = THREE.SRGBColorSpace;
@@ -70,6 +74,7 @@ function Model3DViewer({ modelId, className = "" }) {
     renderer.toneMappingExposure = 1.0;
     renderer.shadowMap.enabled   = true;
     renderer.shadowMap.type      = THREE.PCFSoftShadowMap;
+    renderer.sortObjects         = true;   // ensure transparent meshes render after opaque
     container.appendChild(renderer.domElement);
 
     // ── Scene + RoomEnvironment ────────────────────────────────────
@@ -131,11 +136,70 @@ function Model3DViewer({ modelId, className = "" }) {
       (gltf) => {
         const model = gltf.scene;
 
-        // Only enable shadows — leave all materials/textures exactly as-is
+        // Enable shadows + fix material issues from GLB
         model.traverse((node) => {
           if (!node.isMesh) return;
           node.castShadow    = true;
           node.receiveShadow = true;
+
+          const fixMaterial = (mat, index) => {
+            if (!mat) return mat;
+
+            // ── Known broken material: GWC_Cupboard_05 ─────────────────────
+            // This material has alphaMode=BLEND with a grayscale roughness PNG
+            // as baseColorTexture → renders as TV static noise in Three.js.
+            // Fix: keep texture, just disable the broken BLEND alpha mode.
+            if (mat.name === "GWC_Cupboard_05") {
+              mat.transparent = false;
+              mat.alphaTest   = 0;
+              mat.depthWrite  = true;
+              mat.side        = THREE.FrontSide;
+              mat.needsUpdate = true;
+              return mat;
+            }
+
+            // ── Glass materials: replace with MeshPhysicalMaterial ──────────
+            // MeshPhysicalMaterial with transmission=1 renders real physically-
+            // based glass (refraction + transmission), just like Blender's
+            // glass BSDF shader.
+            const nameLC = (mat.name || "").toLowerCase();
+            const isNamedGlass =
+              nameLC.includes("glass") ||
+              nameLC.includes("kaca") ||
+              nameLC.includes("crystal") ||
+              nameLC.includes("window");
+
+            const isAlphaTransparent =
+              (mat.transparent && mat.opacity < 0.99) ||
+              (mat.alphaTest && mat.alphaTest > 0);
+
+            if (isNamedGlass || isAlphaTransparent) {
+              const glassMat = new THREE.MeshPhysicalMaterial({
+                transmission:      1.0,        // fully transmissive — real glass
+                roughness:         0.04,        // very smooth glass surface
+                ior:               1.5,         // standard glass index of refraction
+                thickness:         0.12,        // thin glass panel (affects depth)
+                transparent:       true,
+                opacity:           1.0,
+                color:             0xffffff,    // clear glass
+                side:              THREE.DoubleSide,
+                depthWrite:        false,
+                envMapIntensity:   1.5,         // strong environment reflections
+              });
+              // Dispose old material to avoid memory leak
+              mat.dispose();
+              return glassMat;
+            }
+
+            return mat;
+          };
+
+          if (Array.isArray(node.material)) {
+            node.material = node.material.map(fixMaterial);
+          } else {
+            const fixed = fixMaterial(node.material, 0);
+            if (fixed !== node.material) node.material = fixed;
+          }
         });
 
         // Auto-fit: normalize largest dim to 1 world unit
@@ -274,21 +338,7 @@ function SwatchBtn({ color, active, onClick }) {
   );
 }
 
-function SizeBtn({ label, active, onClick }) {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      className={`rounded-lg border px-5 py-2.5 text-[11px] font-medium uppercase tracking-[0.16em] transition-all duration-200 ${
-        active
-          ? "border-[#1a1a1a] bg-[#1a1a1a] text-white"
-          : "border-[#e0dbd2] bg-white text-[#555] hover:border-[#1a1a1a]"
-      }`}
-    >
-      {label}
-    </button>
-  );
-}
+
 
 function RelatedCard({ product }) {
   const navigate = useNavigate();
@@ -317,8 +367,8 @@ function RelatedCard({ product }) {
       <p className="mt-0.5 text-[11px] uppercase tracking-[0.12em] text-[#9a9389]">
         {product.category}
       </p>
-      <p className="mt-1 text-[13px] font-medium text-[#1a1a1a]">
-        ${product.price.toLocaleString()}
+      <p className="mt-1 text-[11px] uppercase tracking-[0.12em] text-[#9a9389]">
+        {product.material}
       </p>
     </button>
   );
@@ -328,7 +378,7 @@ function RelatedCard({ product }) {
    PRODUCT INFO PANEL
    (shared between mobile & desktop right column)
 ───────────────────────────────────────── */
-function ProductInfoPanel({ product, activeFrame, setActiveFrame, activeUpholstery, setActiveUpholstery, activeSize, setActiveSize }) {
+function ProductInfoPanel({ product, activeFrame, setActiveFrame, activeUpholstery, setActiveUpholstery }) {
   return (
     <div>
       {/* Series */}
@@ -346,13 +396,6 @@ function ProductInfoPanel({ product, activeFrame, setActiveFrame, activeUpholste
         <StarRating rating={4.5} count={128} />
       </div>
 
-      {/* Price */}
-      <div className="mt-4 flex items-end gap-2">
-        <span className="font-cormorant text-[36px] leading-none text-[#1a1a1a] lg:text-[40px]">
-          ${product.price.toLocaleString()}
-        </span>
-        <span className="pb-1 text-[11px] uppercase tracking-[0.18em] text-[#9a9389]">USD</span>
-      </div>
 
       <div className="my-5 h-px bg-[#e4ddd2]" />
 
@@ -396,20 +439,7 @@ function ProductInfoPanel({ product, activeFrame, setActiveFrame, activeUpholste
         </div>
       </div>
 
-      {/* Size */}
-      <div className="mb-6">
-        <p className="mb-2.5 text-[10px] uppercase tracking-[0.2em] text-[#9a9389]">Size</p>
-        <div className="flex gap-2">
-          {["Small", "Medium", "Large"].map((size) => (
-            <SizeBtn
-              key={size}
-              label={size}
-              active={activeSize === size}
-              onClick={() => setActiveSize(size)}
-            />
-          ))}
-        </div>
-      </div>
+
 
       {/* CTAs */}
       <div className="flex flex-col gap-3">
@@ -458,8 +488,12 @@ export default function ProductDetail() {
 
   const [activeThumb, setActiveThumb] = useState(0);
   const [activeFrame, setActiveFrame] = useState(0);
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+  }, [slug]);
   const [activeUpholstery, setActiveUpholstery] = useState(0);
-  const [activeSize, setActiveSize] = useState("Medium");
+
   const [wishlisted, setWishlisted] = useState(false);
 
   const related = products
@@ -472,10 +506,13 @@ export default function ProductDetail() {
     )
     .slice(0, 4);
 
-  // thumbnails: first 3 are photos, last slot is the special 3D viewer
+  // thumbnails: product.images are used when available, otherwise fall back to legacy photo thumbnails
   const VIEWER_SLOT = "__3d__";
   const thumbnails = product
-    ? [product.image, product.image, product.image, VIEWER_SLOT]
+    ? [
+        ...(product.images?.length ? product.images : [product.image, product.image, product.image]),
+        VIEWER_SLOT,
+      ]
     : [];
 
   /* ── not found ── */
@@ -651,8 +688,6 @@ export default function ProductDetail() {
               setActiveFrame={setActiveFrame}
               activeUpholstery={activeUpholstery}
               setActiveUpholstery={setActiveUpholstery}
-              activeSize={activeSize}
-              setActiveSize={setActiveSize}
             />
           </div>
         </div>
@@ -913,8 +948,6 @@ export default function ProductDetail() {
               {[
                 { label: "Collections", to: "/" },
                 { label: "Living Collection", to: "/products" },
-                { label: "My Layouts", to: "/workspaces" },
-                { label: "Account", to: "/account" },
               ].map((item) => (
                 <Link
                   key={item.to}

@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 
-export default function ProductCard({ title, price, image, to }) {
+export default function ProductCard({ title, image, to }) {
   const content = (
     <>
       <div className="card-img-wrap relative overflow-hidden rounded-[18px] bg-[#ede9e3] sm:rounded-[24px]">
@@ -13,13 +13,10 @@ export default function ProductCard({ title, price, image, to }) {
           className="aspect-[4/5] w-full object-cover transition-transform duration-300"
         />
       </div>
-      <div className="mt-3 flex items-start justify-between gap-2 sm:mt-4 sm:gap-3">
-        <h3 className="min-w-0 truncate font-cormorant text-[22px] leading-none text-[#1a1a1a] sm:text-[28px]">
+      <div className="mt-3 sm:mt-4">
+        <h3 className="truncate font-cormorant text-[22px] leading-none text-[#1a1a1a] sm:text-[28px]">
           {title}
         </h3>
-        <p className="shrink-0 whitespace-nowrap pt-1 text-[13px] font-medium text-[#1a1a1a] sm:text-sm">
-          {price}
-        </p>
       </div>
     </>
   );

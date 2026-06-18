@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ArrowLeft, ArrowRight, Heart, SlidersHorizontal, X } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import Header from "../components/Header";
@@ -22,22 +22,28 @@ export default function LivingCollections() {
   const [activeCategory, setActiveCategory] = useState("All Pieces");
   const [activeMaterial, setActiveMaterial] = useState(0);
   const [activeFinish, setActiveFinish] = useState("OILED WOOD");
-  const [price, setPrice] = useState(4800);
   const [wishlisted, setWishlisted] = useState({});
   const [activePage, setActivePage] = useState(1);
   const [filterOpen, setFilterOpen] = useState(false);
+  const [navVisible, setNavVisible] = useState(true);
+
+  useEffect(() => {
+    let lastScrollY = 0;
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+      setNavVisible(!(currentScrollY > lastScrollY && currentScrollY > 120));
+      lastScrollY = currentScrollY;
+    };
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   const toggleWishlist = (id) =>
     setWishlisted((prev) => ({ ...prev, [id]: !prev[id] }));
 
   const visibleProducts = products.filter((product) => {
-    const matchesCategory =
-      activeCategory === "All Pieces" || product.category === activeCategory;
-
-    return matchesCategory && product.price <= price;
+    return activeCategory === "All Pieces" || product.category === activeCategory;
   });
-
-  const sliderProgress = ((price - 500) / (6000 - 500)) * 100;
 
   // Sidebar inner content – reused in both desktop & mobile drawer
   function FilterContent({ onClose }) {
@@ -100,7 +106,7 @@ export default function LivingCollections() {
           </div>
         </div>
 
-        <div className="mb-8">
+        <div>
           <p className="mb-3 text-[10px] font-medium uppercase tracking-[0.15em] text-[#999]">
             Finish
           </p>
@@ -119,29 +125,6 @@ export default function LivingCollections() {
                 {finish}
               </button>
             ))}
-          </div>
-        </div>
-
-        <div>
-          <p className="mb-3 text-[10px] font-medium uppercase tracking-[0.15em] text-[#999]">
-            Price
-          </p>
-          <div className="flex flex-col gap-2">
-            <input
-              type="range"
-              className="price-slider"
-              min={500}
-              max={6000}
-              value={price}
-              onChange={(event) => setPrice(Number(event.target.value))}
-              style={{
-                background: `linear-gradient(to right, #1a1a1a ${sliderProgress}%, #d0cbc3 ${sliderProgress}%)`,
-              }}
-            />
-            <div className="flex justify-between text-[11px] text-[#888]">
-              <span>$500</span>
-              <span>${price.toLocaleString()}</span>
-            </div>
           </div>
         </div>
       </>
@@ -175,7 +158,10 @@ export default function LivingCollections() {
 
       <div className="mx-auto flex w-full max-w-7xl flex-col gap-8 px-4 pb-12 pt-24 sm:px-6 sm:pt-28 lg:flex-row lg:px-8">
         {/* ── Desktop sidebar ─────────────────────────────── */}
-        <aside className="collection-sidebar hidden lg:sticky lg:top-28 lg:block lg:w-[240px] lg:self-start">
+        <aside
+          className="collection-sidebar hidden lg:sticky lg:block lg:w-[240px] lg:self-start lg:max-h-[calc(100vh-2rem)] lg:overflow-y-auto transition-all duration-300"
+          style={{ top: navVisible ? "6rem" : "1rem" }}
+        >
           <FilterContent />
         </aside>
 
@@ -227,7 +213,7 @@ export default function LivingCollections() {
               Filter
             </button>
             <span className="text-[11px] uppercase tracking-[0.2em] text-[#9a9389]">
-              {activeCategory} · Under ${price.toLocaleString()}
+              {activeCategory}
             </span>
           </div>
 
@@ -237,7 +223,7 @@ export default function LivingCollections() {
               surfaces, and tailored silhouettes.
             </p>
             <p className="uppercase tracking-[0.24em] text-[#9a9389]">
-              {activeCategory} / Under ${price.toLocaleString()}
+              {activeCategory}
             </p>
           </div>
 
@@ -277,20 +263,15 @@ export default function LivingCollections() {
                   </button>
                 </div>
 
-                <div className="flex items-start justify-between gap-2">
-                  <div className="min-w-0">
-                    <p className="mb-0.5 truncate font-cormorant text-[20px] leading-tight text-[#1a1a1a] sm:text-[24px]">
-                      {product.name}
-                    </p>
-                    <p className="mb-1.5 text-[10px] uppercase tracking-[0.12em] text-[#999] sm:text-[11px]">
-                      {product.category}
-                    </p>
-                    <p className="hidden text-[12px] font-light text-[#7d766d] sm:block">
-                      {product.material}
-                    </p>
-                  </div>
-                  <p className="mt-0.5 shrink-0 whitespace-nowrap text-[13px] font-medium text-[#1a1a1a] sm:text-[14px]">
-                    ${product.price.toLocaleString()}
+                <div className="mt-1">
+                  <p className="mb-0.5 truncate font-cormorant text-[20px] leading-tight text-[#1a1a1a] sm:text-[24px]">
+                    {product.name}
+                  </p>
+                  <p className="mb-1 text-[10px] uppercase tracking-[0.12em] text-[#999] sm:text-[11px]">
+                    {product.category}
+                  </p>
+                  <p className="hidden text-[12px] font-light text-[#7d766d] sm:block">
+                    {product.material}
                   </p>
                 </div>
               </article>
@@ -303,7 +284,7 @@ export default function LivingCollections() {
                 No pieces match this filter yet.
               </p>
               <p className="mt-2 text-sm text-[#7d766d]">
-                Try a broader category or increase the price range.
+                Try a broader category or filter.
               </p>
             </div>
           )}

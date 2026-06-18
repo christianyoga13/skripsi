@@ -97,10 +97,9 @@ export default function Home() {
             </div>
             <div className="mt-10 grid grid-cols-2 gap-4 sm:gap-8 xl:grid-cols-4">
               {products.slice(0, 4).map((product) => (
-                <ProductCard
+              <ProductCard
                   key={product.id}
                   title={product.name}
-                  price={`$${product.price.toLocaleString()}.00`}
                   image={product.image}
                   to={`/products/${product.slug}`}
                 />
