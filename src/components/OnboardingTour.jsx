@@ -444,10 +444,10 @@ export default function OnboardingTour() {
           <div
             data-tour-tooltip="true"
             style={getTooltipStyle()}
-            className="pointer-events-auto flex flex-col rounded-3xl border border-[#e4ddd2] bg-white p-4.5 sm:p-5 shadow-2xl transition-all duration-300 md:p-6"
+            className="pointer-events-auto flex flex-col rounded-3xl border border-[#e4ddd2] bg-white p-5 shadow-2xl transition-all duration-300 sm:p-6 md:p-7"
           >
             {/* Header / Step Progress */}
-            <div className="mb-4 flex items-center justify-between">
+            <div className="mb-5 flex items-center justify-between">
               <span className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[#9a9389]">
                 Langkah {activeStep + 1} dari {currentSteps.length}
               </span>
@@ -461,7 +461,7 @@ export default function OnboardingTour() {
             </div>
 
             {/* Title & Desc */}
-            <h3 className="font-cormorant text-xl font-medium leading-tight text-[#1a1a1a] mb-2">
+            <h3 className="font-cormorant text-xl font-medium leading-tight text-[#1a1a1a] mb-3">
               {currentSteps[activeStep].title}
             </h3>
             <p className="font-dmsans text-[13px] leading-relaxed text-[#736c63] mb-6">
