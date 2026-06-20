@@ -44,7 +44,7 @@ export default function Header() {
   return (
     <>
       <header
-        className={`fixed inset-x-0 top-0 z-50 bg-[#f5f3ef]/92 backdrop-blur-xl transition-transform duration-300 ${
+        className={`fixed inset-x-0 top-0 z-50 bg-[#f5f3ef]/95 backdrop-blur-xl transition-transform duration-300 ${
           showHeader ? "translate-y-0" : "-translate-y-full"
         }`}
       >

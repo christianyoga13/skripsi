@@ -64,7 +64,7 @@ export default function LivingCollections() {
     return (
       <>
         <div className="mb-6 flex items-center justify-between border-b border-[#e4ddd2] pb-4">
-          <p className="text-sm font-semibold text-[#1a1a1a]">Categories</p>
+          <h2 className="font-cormorant text-2xl text-[#1a1a1a]">Categories</h2>
           {onClose && (
             <button
               type="button"
@@ -159,7 +159,7 @@ export default function LivingCollections() {
                 <p className="text-[10px] uppercase tracking-[0.2em] text-[#9a9389]">
                   Showing
                 </p>
-                <p className="mt-2 font-cormorant text-3xl text-[#1a1a1a]">
+                <p className="mt-2 flex h-8 items-center font-cormorant text-2xl sm:text-[28px] text-[#1a1a1a]">
                   {String(visibleProducts.length).padStart(2, "0")}
                 </p>
               </div>
@@ -167,7 +167,7 @@ export default function LivingCollections() {
                 <p className="text-[10px] uppercase tracking-[0.2em] text-[#9a9389]">
                   Category
                 </p>
-                <p className="mt-2 text-[11px] font-medium uppercase tracking-[0.08em] text-[#1a1a1a]" title={roomFilter ? getRoomLabel(roomFilter) : activeCategory}>
+                <p className="mt-2 flex h-8 items-center font-cormorant text-2xl sm:text-[28px] text-[#1a1a1a] truncate" title={roomFilter ? getRoomLabel(roomFilter) : activeCategory}>
                   {roomFilter ? getRoomLabel(roomFilter) : activeCategory}
                 </p>
               </div>

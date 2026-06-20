@@ -116,10 +116,7 @@ export default function Wishlist() {
                 </div>
 
                 <div className="mt-3.5 px-1">
-                  <div className="flex items-center justify-between border-t border-[#e0dbd2]/60 pt-3">
-                    <span className="text-sm font-medium text-[#1a1a1a]">
-                      ${product.price.toLocaleString()}
-                    </span>
+                  <div className="flex items-center justify-end border-t border-[#e0dbd2]/60 pt-3">
                     <span className="text-[10px] font-medium uppercase tracking-[0.16em] text-[#5f5a53] group-hover:text-[#1a1a1a] transition-colors duration-200 underline underline-offset-4 decoration-transparent group-hover:decoration-current">
                       View Details
                     </span>

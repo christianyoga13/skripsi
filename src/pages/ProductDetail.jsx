@@ -545,14 +545,15 @@ function ProductInfoPanel({
 
       {/* CTAs */}
       <div className="flex flex-col gap-3">
-        <Link
-          to={`/products/${product.slug}/ar?primary=${activePrimaryId || ""}&secondary=${activeSecondaryId || ""}`}
+        <button
+          type="button"
+          onClick={() => navigate(`/products/${product.slug}/ar?primary=${activePrimaryId || ""}&secondary=${activeSecondaryId || ""}`)}
           data-tour="detail-ar-btn"
           className="flex w-full items-center justify-center gap-2 rounded-full bg-[#1a1a1a] px-6 py-4 text-[11px] font-medium uppercase tracking-[0.22em] text-[#f5f3ef] transition-colors hover:bg-[#333]"
         >
           <Box size={15} />
           Enter AR Mode
-        </Link>
+        </button>
         <button
           type="button"
           onClick={() => toggleWishlist(product.id)}

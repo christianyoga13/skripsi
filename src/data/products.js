@@ -44,7 +44,7 @@ export const products = [
     price: 5200,
     material: "Charcoal Kvadrat Wool",
     category: "Lounge & Sofa",
-    badge: "In Stock",
+    badge: "3D Ready",
     modelId: "sofa", // → couch1.glb
     image: couch1Image1,
     images: [couch1Image1, couch1Image2],
@@ -65,7 +65,7 @@ export const products = [
     price: 4600,
     material: "Natural Linen / Ash Frame",
     category: "Lounge & Sofa",
-    badge: "In Stock",
+    badge: "3D Ready",
     modelId: "sofa2", // → couch.glb
     image: couchImage1,
     images: [couchImage1, couchImage2],
@@ -88,7 +88,7 @@ export const products = [
     price: 1180,
     material: "Honed Travertine",
     category: "Table",
-    badge: "In Stock",
+    badge: "3D Ready",
     modelId: "coffeetbl", // → coffee_table.glb
     image: table1Image1,
     images: [table1Image1, table1Image2],
@@ -111,7 +111,7 @@ export const products = [
     price: 6800,
     material: "Solid Walnut / Linen",
     category: "Bed",
-    badge: "In Stock",
+    badge: "3D Ready",
     modelId: "bed", // → bed.glb
     image: bedImage1,
     images: [bedImage1, bedImage2],
@@ -132,7 +132,7 @@ export const products = [
     price: 4200,
     material: "Oiled Oak",
     category: "Bed",
-    badge: "In Stock",
+    badge: "3D Ready",
     modelId: "bed1", // → bed1.glb
     image: bed1Image1,
     images: [bed1Image1, bed1Image2],
@@ -155,7 +155,7 @@ export const products = [
     price: 1950,
     material: "Solid Ash",
     category: "Study Desk",
-    badge: "In Stock",
+    badge: "3D Ready",
     modelId: "desk", // → studydesk.glb
     image: studydeskImage1,
     images: [studydeskImage1, studydeskImage2],
@@ -176,7 +176,7 @@ export const products = [
     price: 3400,
     material: "Walnut Veneer / Steel",
     category: "Study Desk",
-    badge: "In Stock",
+    badge: "3D Ready",
     modelId: "desk1", // → studydesk1.glb
     image: studydesk1Image1,
     images: [studydesk1Image1, studydesk1Image2],
@@ -199,7 +199,7 @@ export const products = [
     price: 2900,
     material: "Lacquered Oak",
     category: "Cupboard",
-    badge: "In Stock",
+    badge: "3D Ready",
     modelId: "cupboard", // → Cupboard.glb
     image: cupboardImage1,
     images: [cupboardImage1, cupboardImage2],
@@ -220,7 +220,7 @@ export const products = [
     price: 3800,
     material: "Solid Walnut",
     category: "Cupboard",
-    badge: "In Stock",
+    badge: "3D Ready",
     modelId: "cupboard1", // → cupboard1.glb
     image: cupboard1Image1,
     images: [cupboard1Image1, cupboard1Image2],
@@ -243,7 +243,7 @@ export const products = [
     price: 4500,
     material: "Matte White Plastic / Brass",
     category: "Wardrobe",
-    badge: "In Stock",
+    badge: "3D Ready",
     modelId: "wardrobe", // → wardrobe.glb
     image: wardrobe1Image1,
     images: [wardrobe1Image1, wardrobe1Image2],
@@ -264,7 +264,7 @@ export const products = [
     price: 8900,
     material: "Smoked Oak / Velvet Interior",
     category: "Wardrobe",
-    badge: "Made to Order",
+    badge: "3D Ready",
     modelId: "wardrobe1", // → wardrobe1.glb
     image: wardrobeImage1,
     images: [wardrobeImage1, wardrobeImage2],
@@ -287,7 +287,7 @@ export const products = [
     price: 4800,
     material: "Terrazzo / Powder-Coated Steel",
     category: "Table",
-    badge: "In Stock",
+    badge: "3D Ready",
     modelId: "table", // → table.glb
     image: tableImage1,
     images: [tableImage1, tableImage2],
@@ -308,7 +308,7 @@ export const products = [
     price: 5600,
     material: "Solid Walnut",
     category: "Dining Table",
-    badge: "In Stock",
+    badge: "3D Ready",
     modelId: "dining1", // → dining table.glb
     image: diningTableImage1,
     images: [diningTableImage1, diningTableImage2],
@@ -329,7 +329,7 @@ export const products = [
     price: 6200,
     material: "Oiled Oak",
     category: "Dining Table",
-    badge: "In Stock",
+    badge: "3D Ready",
     modelId: "dining2", // → dining table1.glb
     image: diningTable1Image1,
     images: [diningTable1Image1, diningTable1Image2],
@@ -350,7 +350,7 @@ export const products = [
     price: 2100,
     material: "Powder-Coated Steel / Marble",
     category: "Dining Table",
-    badge: "In Stock",
+    badge: "3D Ready",
     modelId: "dining3", // → dining table2.glb
     image: diningTable2Image1,
     images: [diningTable2Image1, diningTable2Image2],
@@ -371,7 +371,7 @@ export const products = [
     price: 3900,
     material: "Reclaimed Teak",
     category: "Table",
-    badge: "In Stock",
+    badge: "3D Ready",
     modelId: "table1", // → table1.glb
     image: table2Image1,
     images: [table2Image1, table2Image2],
