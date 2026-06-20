@@ -1,14 +1,30 @@
 import { useEffect, useState } from "react";
 import { ArrowLeft, ArrowRight, Heart, SlidersHorizontal, X } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import Header from "../components/Header";
 import { products } from "../data/products";
+import { useWishlist } from "../context/WishlistContext";
 
-const materials = ["#1a1a1a", "#c8b89a", "#8a9ba8", "#d4c5b0", "#6b7c6e"];
-const finishes = ["MATTE", "OILED WOOD", "SATIN STEEL"];
+const ROOM_CATEGORIES = {
+  bedroom: ["Bed", "Wardrobe"],
+  living: ["Lounge & Sofa", "Table"],
+  dining: ["Dining Table"],
+  office: ["Study Desk"],
+};
+
+const getRoomLabel = (room) => {
+  if (room === "living") return "Living Room";
+  if (room === "bedroom") return "Bedroom";
+  if (room === "dining") return "Dining Room";
+  if (room === "office") return "Office";
+  return room;
+};
 
 export default function LivingCollections() {
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const roomFilter = searchParams.get("room");
+
   const categories = [
     { name: "All Pieces", count: products.length },
     ...Array.from(new Set(products.map((product) => product.category))).map(
@@ -20,9 +36,7 @@ export default function LivingCollections() {
   ];
 
   const [activeCategory, setActiveCategory] = useState("All Pieces");
-  const [activeMaterial, setActiveMaterial] = useState(0);
-  const [activeFinish, setActiveFinish] = useState("OILED WOOD");
-  const [wishlisted, setWishlisted] = useState({});
+  const { toggleWishlist, isInWishlist } = useWishlist();
   const [activePage, setActivePage] = useState(1);
   const [filterOpen, setFilterOpen] = useState(false);
   const [navVisible, setNavVisible] = useState(true);
@@ -38,10 +52,10 @@ export default function LivingCollections() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const toggleWishlist = (id) =>
-    setWishlisted((prev) => ({ ...prev, [id]: !prev[id] }));
-
   const visibleProducts = products.filter((product) => {
+    if (roomFilter && ROOM_CATEGORIES[roomFilter]) {
+      return ROOM_CATEGORIES[roomFilter].includes(product.category);
+    }
     return activeCategory === "All Pieces" || product.category === activeCategory;
   });
 
@@ -49,31 +63,32 @@ export default function LivingCollections() {
   function FilterContent({ onClose }) {
     return (
       <>
-        {onClose && (
-          <div className="mb-6 flex items-center justify-between">
-            <p className="text-sm font-medium text-[#1a1a1a]">Filters</p>
+        <div className="mb-6 flex items-center justify-between border-b border-[#e4ddd2] pb-4">
+          <p className="text-sm font-semibold text-[#1a1a1a]">Categories</p>
+          {onClose && (
             <button
               type="button"
               onClick={onClose}
-              className="rounded-full p-1.5 text-[#888] hover:text-[#1a1a1a] transition-colors"
-              aria-label="Tutup filter"
+              className="rounded-full p-1.5 text-[#888] hover:text-[#1a1a1a] transition-colors cursor-pointer"
+              aria-label="Tutup kategori"
             >
               <X size={16} strokeWidth={1.8} />
             </button>
-          </div>
-        )}
+          )}
+        </div>
 
-        <div className="mb-8">
-          <p className="mb-3 text-[10px] font-medium uppercase tracking-[0.15em] text-[#999]">
-            Category
-          </p>
+        <div className="flex flex-col gap-1">
           {categories.map((category) => (
             <button
               key={category.name}
               type="button"
-              onClick={() => { setActiveCategory(category.name); onClose?.(); }}
-              className={`flex w-full items-center justify-between border-none bg-transparent py-1.5 text-left text-[13px] transition-colors duration-200 ${
-                activeCategory === category.name
+              onClick={() => {
+                setActiveCategory(category.name);
+                setSearchParams({}); // Clear query parameter
+                onClose?.();
+              }}
+              className={`flex w-full items-center justify-between border-none bg-transparent py-2.5 text-left text-[13px] transition-colors duration-200 ${
+                !roomFilter && activeCategory === category.name
                   ? "font-medium text-[#1a1a1a]"
                   : "text-[#555] hover:text-[#1a1a1a]"
               }`}
@@ -82,50 +97,6 @@ export default function LivingCollections() {
               <span className="text-[11px] text-[#bbb]">{category.count}</span>
             </button>
           ))}
-        </div>
-
-        <div className="mb-8">
-          <p className="mb-3 text-[10px] font-medium uppercase tracking-[0.15em] text-[#999]">
-            Material
-          </p>
-          <div className="flex flex-wrap gap-2">
-            {materials.map((color, index) => (
-              <button
-                key={color}
-                type="button"
-                onClick={() => setActiveMaterial(index)}
-                className={`h-5 w-5 rounded-full border-2 transition-all duration-200 ${
-                  activeMaterial === index
-                    ? "border-[#1a1a1a]"
-                    : "border-transparent hover:border-[#1a1a1a]"
-                }`}
-                style={{ backgroundColor: color }}
-                aria-label={`Material option ${index + 1}`}
-              />
-            ))}
-          </div>
-        </div>
-
-        <div>
-          <p className="mb-3 text-[10px] font-medium uppercase tracking-[0.15em] text-[#999]">
-            Finish
-          </p>
-          <div className="flex flex-col gap-1.5">
-            {finishes.map((finish) => (
-              <button
-                key={finish}
-                type="button"
-                onClick={() => setActiveFinish(finish)}
-                className={`w-fit rounded-sm border px-2.5 py-1 text-[10px] font-medium tracking-[0.1em] transition-all duration-200 ${
-                  activeFinish === finish
-                    ? "border-[#1a1a1a] bg-[#1a1a1a] text-[#f5f3ef]"
-                    : "border-[#d0cbc3] bg-transparent text-[#555] hover:border-[#1a1a1a] hover:bg-[#1a1a1a] hover:text-[#f5f3ef]"
-                }`}
-              >
-                {finish}
-              </button>
-            ))}
-          </div>
         </div>
       </>
     );
@@ -159,6 +130,7 @@ export default function LivingCollections() {
       <div className="mx-auto flex w-full max-w-7xl flex-col gap-8 px-4 pb-12 pt-24 sm:px-6 sm:pt-28 lg:flex-row lg:px-8">
         {/* ── Desktop sidebar ─────────────────────────────── */}
         <aside
+          data-tour="collection-filters"
           className="collection-sidebar hidden lg:sticky lg:block lg:w-[240px] lg:self-start lg:max-h-[calc(100vh-2rem)] lg:overflow-y-auto transition-all duration-300"
           style={{ top: navVisible ? "6rem" : "1rem" }}
         >
@@ -168,7 +140,7 @@ export default function LivingCollections() {
         {/* ── Main content ────────────────────────────────── */}
         <main className="flex-1 overflow-hidden rounded-[28px] border border-[#e4ddd2] bg-[#f8f6f2] px-5 py-6 shadow-[0_24px_60px_rgba(26,26,26,0.06)] sm:px-8 sm:py-8">
           <div className="mb-10 grid gap-6 border-b border-[#e0dbd2] pb-8 lg:grid-cols-[minmax(0,1fr)_240px] lg:items-end">
-            <div>
+            <div data-tour="collection-title">
               <p className="mb-3 text-[11px] uppercase tracking-[0.3em] text-[#8f877c]">
                 Curated Interior Objects
               </p>
@@ -193,10 +165,10 @@ export default function LivingCollections() {
               </div>
               <div className="rounded-2xl border border-[#e5dfd5] bg-white/70 px-4 py-4">
                 <p className="text-[10px] uppercase tracking-[0.2em] text-[#9a9389]">
-                  Finish
+                  Category
                 </p>
-                <p className="mt-2 text-[12px] font-medium tracking-[0.18em] text-[#1a1a1a]">
-                  {activeFinish}
+                <p className="mt-2 text-[11px] font-medium uppercase tracking-[0.08em] text-[#1a1a1a]" title={roomFilter ? getRoomLabel(roomFilter) : activeCategory}>
+                  {roomFilter ? getRoomLabel(roomFilter) : activeCategory}
                 </p>
               </div>
             </div>
@@ -206,14 +178,15 @@ export default function LivingCollections() {
           <div className="mb-5 flex items-center gap-3 lg:hidden">
             <button
               type="button"
+              data-tour="collection-filters-btn"
               onClick={() => setFilterOpen(true)}
               className="inline-flex items-center gap-2 rounded-full border border-[#d0cbc3] bg-white px-4 py-2.5 text-[11px] font-medium uppercase tracking-[0.16em] text-[#555] transition-colors hover:border-[#1a1a1a] hover:text-[#1a1a1a]"
             >
               <SlidersHorizontal size={13} strokeWidth={1.8} />
-              Filter
+              Categories
             </button>
             <span className="text-[11px] uppercase tracking-[0.2em] text-[#9a9389]">
-              {activeCategory}
+              {roomFilter ? getRoomLabel(roomFilter) : activeCategory}
             </span>
           </div>
 
@@ -223,11 +196,11 @@ export default function LivingCollections() {
               surfaces, and tailored silhouettes.
             </p>
             <p className="uppercase tracking-[0.24em] text-[#9a9389]">
-              {activeCategory}
+              {roomFilter ? getRoomLabel(roomFilter) : activeCategory}
             </p>
           </div>
 
-          <div className="grid grid-cols-2 gap-x-4 gap-y-6 sm:gap-x-6 sm:gap-y-8 xl:grid-cols-3">
+          <div data-tour="collection-cards" className="grid grid-cols-2 gap-x-4 gap-y-6 sm:gap-x-6 sm:gap-y-8 xl:grid-cols-3">
             {visibleProducts.map((product) => (
               <article
                 key={product.id}
@@ -258,7 +231,7 @@ export default function LivingCollections() {
                     <Heart
                       size={14}
                       strokeWidth={1.8}
-                      className={wishlisted[product.id] ? "fill-current" : ""}
+                      className={isInWishlist(product.id) ? "fill-current text-rose-500" : ""}
                     />
                   </button>
                 </div>

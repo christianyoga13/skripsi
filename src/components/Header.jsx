@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { NavLink } from "react-router-dom";
-import { Menu, ShoppingBag, X } from "lucide-react";
+import { Menu, Heart, X } from "lucide-react";
+import { useWishlist } from "../context/WishlistContext";
 
 const menuItems = [
   { label: "The Edit", to: "/" },
@@ -8,6 +9,7 @@ const menuItems = [
 ];
 
 export default function Header() {
+  const { wishlistCount } = useWishlist();
   const [showHeader, setShowHeader] = useState(true);
   const [mobileOpen, setMobileOpen] = useState(false);
 
@@ -49,6 +51,7 @@ export default function Header() {
         <nav className="mx-auto flex h-16 w-full max-w-7xl items-center gap-6 px-4 sm:h-20 sm:px-6 lg:px-8">
           <NavLink
             to="/"
+            data-tour="header-logo"
             className="font-cormorant text-2xl font-medium tracking-[0.14em] text-[#1a1a1a] sm:text-3xl"
             onClick={() => setMobileOpen(false)}
           >
@@ -62,6 +65,7 @@ export default function Header() {
                 <NavLink
                   to={item.to}
                   end={item.to === "/"}
+                  data-tour={item.to === "/products" ? "header-atelier" : undefined}
                   className={({ isActive }) =>
                     `header-link inline-flex items-center gap-1.5 ${isActive ? "header-link-active" : ""}`
                   }
@@ -78,17 +82,28 @@ export default function Header() {
             <span className="hidden border-b border-[#1a1a1a] pb-1 text-[11px] uppercase tracking-[0.28em] text-[#5f5a53] lg:inline-block">
               Crafted Interiors
             </span>
-            <button
-              type="button"
-              className="rounded-full border border-[#d8d0c4] p-2 text-[#1a1a1a] transition-colors duration-200 hover:bg-[#1a1a1a] hover:text-[#f5f3ef]"
-              aria-label="Shopping bag"
+            <NavLink
+              to="/wishlist"
+              data-tour="header-wishlist"
+              className={({ isActive }) =>
+                `relative rounded-full border border-[#d8d0c4] p-2 text-[#1a1a1a] transition-colors duration-200 hover:bg-[#1a1a1a] hover:text-[#f5f3ef] flex items-center justify-center ${
+                  isActive ? "bg-[#1a1a1a] text-[#f5f3ef] border-[#1a1a1a]" : ""
+                }`
+              }
+              aria-label="Wishlist"
             >
-              <ShoppingBag size={17} strokeWidth={1.8} />
-            </button>
+              <Heart size={17} strokeWidth={1.8} />
+              {wishlistCount > 0 && (
+                <span className="absolute -right-1 -top-1 flex h-4 w-4 items-center justify-center rounded-full bg-rose-500 text-[9px] font-semibold text-white ring-2 ring-[#f5f3ef]">
+                  {wishlistCount}
+                </span>
+              )}
+            </NavLink>
 
             {/* Hamburger – mobile only */}
             <button
               type="button"
+              data-tour="header-hamburger"
               onClick={() => setMobileOpen((v) => !v)}
               className="rounded-full border border-[#d8d0c4] p-2 text-[#1a1a1a] transition-colors duration-200 hover:bg-[#1a1a1a] hover:text-[#f5f3ef] md:hidden"
               aria-label={mobileOpen ? "Tutup menu" : "Buka menu"}
@@ -139,6 +154,7 @@ export default function Header() {
                 key={item.to}
                 to={item.to}
                 end={item.to === "/"}
+                data-tour={item.to === "/products" ? "header-atelier-mobile" : undefined}
                 onClick={() => setMobileOpen(false)}
                 className={({ isActive }) =>
                   `flex items-center gap-3 rounded-2xl px-4 py-3.5 text-sm font-medium transition-colors duration-200 ${
@@ -152,6 +168,27 @@ export default function Header() {
                 {item.label}
               </NavLink>
             ))}
+            <NavLink
+              to="/wishlist"
+              onClick={() => setMobileOpen(false)}
+              className={({ isActive }) =>
+                `flex items-center justify-between rounded-2xl px-4 py-3.5 text-sm font-medium transition-colors duration-200 ${
+                  isActive
+                    ? "bg-[#1a1a1a] text-[#f5f3ef]"
+                    : "text-[#4a4540] hover:bg-[#1a1a1a]/6 hover:text-[#1a1a1a]"
+                }`
+              }
+            >
+              <div className="flex items-center gap-3">
+                <Heart size={15} strokeWidth={1.8} />
+                <span>Wishlist</span>
+              </div>
+              {wishlistCount > 0 && (
+                <span className="flex h-5 min-w-5 items-center justify-center rounded-full bg-rose-500 px-1 text-[10px] font-semibold text-white">
+                  {wishlistCount}
+                </span>
+              )}
+            </NavLink>
           </nav>
 
           <div className="border-t border-[#e0dbd2] px-4 py-6">

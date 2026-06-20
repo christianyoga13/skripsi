@@ -133,3 +133,8 @@ a {
 .product-card:hover .card-img-wrap img {
   transform: scale(1.03);
 }
+
+/* Force header visibility when onboarding tour is active */
+body.tour-active header {
+  transform: translateY(0) !important;
+}

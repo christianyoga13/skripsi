@@ -1,6 +1,8 @@
-export default function CategoryCard({ title, subtitle, image }) {
+import { Link } from "react-router-dom";
+
+export default function CategoryCard({ title, subtitle, image, to }) {
   return (
-    <div className="group overflow-hidden rounded-[20px] border border-[#e4ddd2] bg-[#f8f6f2] shadow-[0_24px_60px_rgba(26,26,26,0.05)] sm:rounded-[28px]">
+    <Link to={to} className="group block overflow-hidden rounded-[20px] border border-[#e4ddd2] bg-[#f8f6f2] shadow-[0_24px_60px_rgba(26,26,26,0.05)] sm:rounded-[28px] transition-all duration-300 hover:-translate-y-0.5">
       <img
         src={image}
         alt={title}
@@ -15,6 +17,6 @@ export default function CategoryCard({ title, subtitle, image }) {
         </h3>
         <p className="mt-2 text-sm text-[#736c63] sm:mt-3">{subtitle}</p>
       </div>
-    </div>
+    </Link>
   );
 }

@@ -5,6 +5,12 @@ import CategoryCard from "../components/CategoryCard";
 import ProductCard from "../components/ProductCard";
 import { products } from "../data/products";
 import interiorImg from "../assets/interior design.webp";
+import aboutUsImg from "../assets/about-us.jpg";
+import livingImg from "../assets/product-image/living.webp";
+import bedroomImg from "../assets/product-image/bedroom.webp";
+import officeImg from "../assets/product-image/office.webp";
+import heroSectionImg from "../assets/product-image/hero-section.webp";
+import innovationImg from "../assets/product-image/innovation.webp";
 
 export default function Home() {
   const [email, setEmail] = useState("");
@@ -21,9 +27,9 @@ export default function Home() {
 
       <main>
         {/* ── Hero ───────────────────────────────────────────── */}
-        <section className="relative mt-16 h-[85vh] min-h-[480px] overflow-hidden sm:mt-20 sm:h-[90vh]">
+        <section data-tour="home-hero" className="relative mt-16 h-[85vh] min-h-[480px] overflow-hidden sm:mt-20 sm:h-[90vh]">
           <img
-            src={interiorImg}
+            src={heroSectionImg}
             alt="Interior Design"
             className="absolute inset-0 h-full w-full object-cover"
           />
@@ -42,49 +48,49 @@ export default function Home() {
         </section>
 
         {/* ── Categories ─────────────────────────────────────── */}
-        <section className="py-12 sm:py-16">
+        <section data-tour="home-categories" className="py-12 sm:py-16">
           <div className="mx-auto max-w-7xl space-y-4 px-4 sm:space-y-6 sm:px-6 lg:px-8">
             <div className="grid gap-4 sm:gap-6 lg:grid-cols-[1.7fr_0.5fr]">
-              <CategoryCard title="Living Room" subtitle="Elevate your relaxation space" image={interiorImg} />
-              <CategoryCard title="Bedroom"     subtitle="Create your sanctuary"        image={interiorImg} />
+              <CategoryCard title="Living Room" subtitle="Elevate your relaxation space" image={livingImg} to="/products?room=living" />
+              <CategoryCard title="Bedroom"     subtitle="Create your sanctuary"        image={bedroomImg} to="/products?room=bedroom" />
             </div>
             <div className="grid gap-4 sm:gap-6 lg:grid-cols-[0.8fr_1.4fr]">
-              <CategoryCard title="Dining Room" subtitle="Gather in style"              image={interiorImg} />
-              <CategoryCard title="Office"      subtitle="Boost your productivity"      image={interiorImg} />
+              <CategoryCard title="Dining Room" subtitle="Gather in style"              image={aboutUsImg} to="/products?room=dining" />
+              <CategoryCard title="Office"      subtitle="Boost your productivity"      image={officeImg} to="/products?room=office" />
             </div>
           </div>
         </section>
 
         {/* ── Measures with Light ────────────────────────────── */}
-        <section className="w-full bg-[#1f1f1f] py-16 text-white sm:py-20">
+        <section data-tour="home-ar-try" className="w-full bg-[#2a2620] py-16 text-[#c8bfb4] sm:py-20">
           <div className="mx-auto flex max-w-6xl flex-col items-center gap-10 px-6 sm:px-10 lg:flex-row lg:gap-16 lg:px-8">
             <div className="w-full lg:flex-1">
               <p className="mb-3 text-[11px] uppercase tracking-[0.28em] text-[#9a9389]">Innovation</p>
-              <h2 className="font-cormorant text-4xl font-medium leading-tight sm:text-5xl">
+              <h2 className="font-cormorant text-4xl font-medium leading-tight text-[#f5f3ef] sm:text-5xl">
                 Measures with Light
               </h2>
-              <p className="mt-4 max-w-md text-sm leading-relaxed text-[#b0a89e] sm:text-base">
+              <p className="mt-4 max-w-md text-sm leading-relaxed text-[#c8bfb4] sm:text-base">
                 Experience our collection in your space before it arrives. Our proprietary 3D
                 visualization and AR technology allow for millimeter-perfect placement and
                 lighting simulation.
               </p>
               <div className="mt-8 flex flex-wrap gap-3">
-                <button className="rounded-full bg-blue-600 px-6 py-3 text-[11px] font-medium uppercase tracking-[0.18em] text-white transition-colors hover:bg-blue-700">
+                <button className="rounded-full bg-[#f5f3ef] px-6 py-3 text-[11px] font-medium uppercase tracking-[0.18em] text-[#1a1a1a] transition-colors hover:bg-white">
                   Try AR
                 </button>
-                <button className="rounded-full border border-white/40 px-6 py-3 text-[11px] font-medium uppercase tracking-[0.18em] text-white transition-colors hover:border-white hover:bg-white/10">
+                <button className="rounded-full border border-[#3d3830] px-6 py-3 text-[11px] font-medium uppercase tracking-[0.18em] text-[#c8bfb4] transition-colors hover:border-[#c8bfb4] hover:bg-white/5">
                   Learn More
                 </button>
               </div>
             </div>
             <div className="w-full max-w-sm lg:max-w-none lg:w-auto lg:flex-shrink-0">
-              <img src={interiorImg} alt="Interior Design" className="w-full rounded-2xl object-cover lg:h-96 lg:w-auto" />
+              <img src={innovationImg} alt="Innovation design" className="w-full rounded-2xl object-cover lg:h-96 lg:w-auto" />
             </div>
           </div>
         </section>
 
         {/* ── Permanent Collection ───────────────────────────── */}
-        <section className="py-12 sm:py-16">
+        <section data-tour="home-permanent" className="py-12 sm:py-16">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <h2 className="font-cormorant text-4xl font-medium text-[#1a1a1a] sm:text-5xl">
               The Permanent Collection
@@ -116,9 +122,10 @@ export default function Home() {
               {/* Image — full-width mobile, half desktop */}
               <div className="relative h-72 w-full flex-shrink-0 overflow-hidden rounded-2xl sm:h-96 lg:h-auto lg:w-1/2">
                 <img
-                  src={interiorImg}
+                  src={aboutUsImg}
                   alt="Archetype Studio"
                   className="absolute inset-0 h-full w-full object-cover"
+                  style={{ transform: "scale(1.4)" }}
                 />
                 <div className="absolute inset-0 bg-[#1a1a1a]/10" />
               </div>

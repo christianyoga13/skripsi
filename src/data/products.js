@@ -1,36 +1,38 @@
 // ─── model imports for AR ────────────────────────────────────────────────────
 // Each product has a `modelId` that maps to an AR_MODELS entry in ProductAR.jsx
 
-import bedImage1 from "../assets/product-image/bed-1.png";
-import bedImage2 from "../assets/product-image/bed-2.png";
-import bed1Image1 from "../assets/product-image/bed1-1.png";
-import bed1Image2 from "../assets/product-image/bed1-2.png";
-import cupboardImage1 from "../assets/product-image/cupboard-1.png";
-import cupboardImage2 from "../assets/product-image/cupboard-2.png";
-import couch1Image1 from "../assets/product-image/couch1-1.png";
-import couch1Image2 from "../assets/product-image/couch1-2.png";
-import tableImage1 from "../assets/product-image/table-1.png";
-import tableImage2 from "../assets/product-image/table-2.png";
-import table1Image1 from "../assets/product-image/table1-1.png";
-import table1Image2 from "../assets/product-image/table1-2.png";
-import diningTableImage1 from "../assets/product-image/diningtable-1.png";
-import diningTableImage2 from "../assets/product-image/diningtable-2.png";
-import diningTable1Image1 from "../assets/product-image/diningtable1-1.png";
-import diningTable1Image2 from "../assets/product-image/diningtable1-2.png";
-import diningTable2Image1 from "../assets/product-image/diningtable2-1.png";
-import diningTable2Image2 from "../assets/product-image/diningtable2-2.png";
-import table2Image1 from "../assets/product-image/table2-1.png";
-import table2Image2 from "../assets/product-image/table2-2.png";
-import studydeskImage1 from "../assets/product-image/studydesk-1.png";
-import studydeskImage2 from "../assets/product-image/studydesk-2.png";
-import studydesk1Image1 from "../assets/product-image/studydesk1-1.png";
-import studydesk1Image2 from "../assets/product-image/studydesk1-2.png";
-import wardrobe1Image1 from "../assets/product-image/wardrobe1-1.png";
-import wardrobe1Image2 from "../assets/product-image/wardrobe1-2.png";
-import wardrobeImage1 from "../assets/product-image/wardrobe-1.png";
-import wardrobeImage2 from "../assets/product-image/wardrobe-2.png";
-import cupboard1Image1 from "../assets/product-image/cupboard1-1.png";
-import cupboard1Image2 from "../assets/product-image/cupboard1-2.png";
+import bedImage1 from "../assets/product-image/bed-1.webp";
+import bedImage2 from "../assets/product-image/bed-2.webp";
+import bed1Image1 from "../assets/product-image/bed1-1.webp";
+import bed1Image2 from "../assets/product-image/bed1-2.webp";
+import cupboardImage1 from "../assets/product-image/cupboard-1.webp";
+import cupboardImage2 from "../assets/product-image/cupboard-2.webp";
+import couch1Image1 from "../assets/product-image/couch1-1.webp";
+import couch1Image2 from "../assets/product-image/couch1-2.webp";
+import couchImage1 from "../assets/product-image/couch-1.webp";
+import couchImage2 from "../assets/product-image/couch-2.webp";
+import tableImage1 from "../assets/product-image/table-1.webp";
+import tableImage2 from "../assets/product-image/table-2.webp";
+import table1Image1 from "../assets/product-image/table1-1.webp";
+import table1Image2 from "../assets/product-image/table1-2.webp";
+import diningTableImage1 from "../assets/product-image/diningtable-1.webp";
+import diningTableImage2 from "../assets/product-image/diningtable-2.webp";
+import diningTable1Image1 from "../assets/product-image/diningtable1-1.webp";
+import diningTable1Image2 from "../assets/product-image/diningtable1-2.webp";
+import diningTable2Image1 from "../assets/product-image/diningtable2-1.webp";
+import diningTable2Image2 from "../assets/product-image/diningtable2-2.webp";
+import table2Image1 from "../assets/product-image/table2-1.webp";
+import table2Image2 from "../assets/product-image/table2-2.webp";
+import studydeskImage1 from "../assets/product-image/studydesk-1.webp";
+import studydeskImage2 from "../assets/product-image/studydesk-2.webp";
+import studydesk1Image1 from "../assets/product-image/studydesk1-1.webp";
+import studydesk1Image2 from "../assets/product-image/studydesk1-2.webp";
+import wardrobe1Image1 from "../assets/product-image/wardrobe1-1.webp";
+import wardrobe1Image2 from "../assets/product-image/wardrobe1-2.webp";
+import wardrobeImage1 from "../assets/product-image/wardrobe-1.webp";
+import wardrobeImage2 from "../assets/product-image/wardrobe-2.webp";
+import cupboard1Image1 from "../assets/product-image/cupboard1-1.webp";
+import cupboard1Image2 from "../assets/product-image/cupboard1-2.webp";
 
 export const products = [
   // ── Lounge & Sofa ──────────────────────────────────────────────────────────
@@ -65,8 +67,8 @@ export const products = [
     category: "Lounge & Sofa",
     badge: "In Stock",
     modelId: "sofa2", // → couch.glb
-    image:
-      "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=900&q=80",
+    image: couchImage1,
+    images: [couchImage1, couchImage2],
     frameFinishes: ["#c8b89a", "#2d2c2b", "#8c654d", "#5c5147"],
     upholstery: ["#f4f0eb", "#d6c5a8", "#8e7665", "#515151"],
     dimensions: "W 260cm x D 90cm x H 72cm",
@@ -239,7 +241,7 @@ export const products = [
     series: "Nordic Line",
     name: "Minimal Wardrobe",
     price: 4500,
-    material: "Matte White MDF / Brass",
+    material: "Matte White Plastic / Brass",
     category: "Wardrobe",
     badge: "In Stock",
     modelId: "wardrobe", // → wardrobe.glb

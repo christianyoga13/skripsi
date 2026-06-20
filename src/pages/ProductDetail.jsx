@@ -7,6 +7,18 @@ import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import { RoomEnvironment } from "three/examples/jsm/environments/RoomEnvironment.js";
 import Header from "../components/Header";
 import { getProductBySlug, products } from "../data/products";
+import { useWishlist } from "../context/WishlistContext";
+import {
+  FABRIC_URLS,
+  TABLECLOTH_URLS,
+  WOOD_URLS,
+  PLASTIC_URLS,
+  WOOD47_URLS,
+  MODEL_SLOTS,
+  loadTextureSet,
+  buildMaterialFromOption,
+  applySlotToModel
+} from "../lib/customizer";
 
 // GLB model imports
 import couchModel        from "../assets/couch1.glb";
@@ -50,10 +62,74 @@ const MODEL_MAP = {
    Shows the GLB with its original embedded materials — no overrides.
 ───────────────────────────────────────── */
 
-function Model3DViewer({ modelId, className = "" }) {
+function Model3DViewer({ modelId, activePrimaryId, activeSecondaryId, className = "" }) {
   const mountRef = useRef(null);
   const [loading, setLoading] = useState(true);
   const [error,   setError]   = useState(false);
+  const [modelRoot, setModelRoot] = useState(null);
+  const [allTextures, setAllTextures] = useState({ woodTextures: null, fabricTextures: null, tableclothTextures: null, plasticTextures: null, wood47Textures: null });
+  const [texturesLoaded, setTexturesLoaded] = useState(false);
+
+  // Load textures once on mount
+  useEffect(() => {
+    const texLoader = new THREE.TextureLoader();
+    const textures = { woodTextures: null, fabricTextures: null, tableclothTextures: null, plasticTextures: null, wood47Textures: null };
+    let loadedSets = 0;
+    const checkAllLoaded = () => {
+      loadedSets += 1;
+      if (loadedSets === 5) {
+        setAllTextures(textures);
+        setTexturesLoaded(true);
+      }
+    };
+
+    loadTextureSet(texLoader, FABRIC_URLS, (result) => {
+      textures.fabricTextures = result;
+      checkAllLoaded();
+    });
+    loadTextureSet(texLoader, WOOD_URLS, (result) => {
+      textures.woodTextures = result;
+      checkAllLoaded();
+    });
+    loadTextureSet(texLoader, TABLECLOTH_URLS, (result) => {
+      textures.tableclothTextures = result;
+      checkAllLoaded();
+    });
+    loadTextureSet(texLoader, PLASTIC_URLS, (result) => {
+      textures.plasticTextures = result;
+      checkAllLoaded();
+    });
+    loadTextureSet(texLoader, WOOD47_URLS, (result) => {
+      textures.wood47Textures = result;
+      checkAllLoaded();
+    });
+  }, []);
+
+  // Apply customizations dynamically in real-time
+  useEffect(() => {
+    if (!modelRoot || !texturesLoaded) return;
+
+    const slots = MODEL_SLOTS[modelId];
+    if (!slots) return;
+
+    if (slots.primarySlot && activePrimaryId) {
+      const { options, matTarget, textureSet, defaultId } = slots.primarySlot;
+      const isDefault = activePrimaryId === defaultId;
+      const opt = options.find((o) => o.id === activePrimaryId) ?? options.find(o => o.id === defaultId) ?? options[0];
+      const mat = buildMaterialFromOption(opt, textureSet, allTextures);
+      applySlotToModel(modelRoot, matTarget, mat, isDefault);
+      mat.dispose();
+    }
+
+    if (slots.secondarySlot && activeSecondaryId) {
+      const { options, matTarget, textureSet, defaultId } = slots.secondarySlot;
+      const isDefault = activeSecondaryId === defaultId;
+      const opt = options.find((o) => o.id === activeSecondaryId) ?? options.find(o => o.id === defaultId) ?? options[0];
+      const mat = buildMaterialFromOption(opt, textureSet, allTextures);
+      applySlotToModel(modelRoot, matTarget, mat, isDefault);
+      mat.dispose();
+    }
+  }, [modelId, activePrimaryId, activeSecondaryId, modelRoot, texturesLoaded, allTextures]);
 
   useEffect(() => {
     const container = mountRef.current;
@@ -225,6 +301,7 @@ function Model3DViewer({ modelId, className = "" }) {
         controls.update();
 
         scene.add(model);
+        setModelRoot(model);
         setLoading(false);
 
         const animate = () => {
@@ -378,7 +455,17 @@ function RelatedCard({ product }) {
    PRODUCT INFO PANEL
    (shared between mobile & desktop right column)
 ───────────────────────────────────────── */
-function ProductInfoPanel({ product, activeFrame, setActiveFrame, activeUpholstery, setActiveUpholstery }) {
+function ProductInfoPanel({
+  product,
+  activePrimaryId,
+  setActivePrimaryId,
+  activeSecondaryId,
+  setActiveSecondaryId
+}) {
+  const { toggleWishlist, isInWishlist } = useWishlist();
+  const wishlisted = isInWishlist(product.id);
+  const slots = MODEL_SLOTS[product.modelId];
+
   return (
     <div>
       {/* Series */}
@@ -396,55 +483,71 @@ function ProductInfoPanel({ product, activeFrame, setActiveFrame, activeUpholste
         <StarRating rating={4.5} count={128} />
       </div>
 
-
       <div className="my-5 h-px bg-[#e4ddd2]" />
 
-      {/* Frame finish */}
-      <div className="mb-4">
-        <div className="mb-2.5 flex items-center justify-between">
-          <p className="text-[10px] uppercase tracking-[0.2em] text-[#9a9389]">Frame Finish</p>
-          <p className="text-[10px] uppercase tracking-[0.14em] text-[#b2aa9f]">
-            {product.material.split(" / ")[0]}
-          </p>
+      {/* Frame finish (Primary Slot) */}
+      {slots?.primarySlot && (
+        <div className="mb-4">
+          <div className="mb-2.5 flex items-center justify-between">
+            <p className="text-[10px] uppercase tracking-[0.2em] text-[#9a9389]">{slots.primarySlot.label}</p>
+            <p className="text-[10px] uppercase tracking-[0.14em] text-[#b2aa9f]">
+              {slots.primarySlot.options.find((o) => o.id === (activePrimaryId || slots.primarySlot.defaultId))?.label || ""}
+            </p>
+          </div>
+          <div className="flex flex-wrap gap-2">
+            {slots.primarySlot.options.map((opt) => {
+              const hex = `#${opt.hex.toString(16).padStart(6, "0")}`;
+              const isActive = activePrimaryId
+                ? activePrimaryId === opt.id
+                : opt.id === slots.primarySlot.defaultId;
+              return (
+                <SwatchBtn
+                  key={opt.id}
+                  color={hex}
+                  active={isActive}
+                  onClick={() => setActivePrimaryId(opt.id)}
+                />
+              );
+            })}
+          </div>
         </div>
-        <div className="flex gap-2">
-          {product.frameFinishes.map((color, i) => (
-            <SwatchBtn
-              key={color}
-              color={color}
-              active={activeFrame === i}
-              onClick={() => setActiveFrame(i)}
-            />
-          ))}
-        </div>
-      </div>
+      )}
 
-      {/* Upholstery */}
-      <div className="mb-5">
-        <div className="mb-2.5 flex items-center justify-between">
-          <p className="text-[10px] uppercase tracking-[0.2em] text-[#9a9389]">Upholstery</p>
-          <p className="text-[10px] uppercase tracking-[0.14em] text-[#b2aa9f]">
-            {product.material.split(" / ")[1] ?? product.material}
-          </p>
+      {/* Upholstery (Secondary Slot) */}
+      {slots?.secondarySlot && (
+        <div className="mb-5">
+          <div className="mb-2.5 flex items-center justify-between">
+            <p className="text-[10px] uppercase tracking-[0.2em] text-[#9a9389]">{slots.secondarySlot.label}</p>
+            <p className="text-[10px] uppercase tracking-[0.14em] text-[#b2aa9f]">
+              {slots.secondarySlot.options.find((o) => o.id === (activeSecondaryId || slots.secondarySlot.defaultId))?.label || ""}
+            </p>
+          </div>
+          <div className="flex flex-wrap gap-2">
+            {slots.secondarySlot.options.map((opt) => {
+              const hex = `#${opt.hex.toString(16).padStart(6, "0")}`;
+              const isActive = activeSecondaryId
+                ? activeSecondaryId === opt.id
+                : opt.id === slots.secondarySlot.defaultId;
+              return (
+                <SwatchBtn
+                  key={opt.id}
+                  color={hex}
+                  active={isActive}
+                  onClick={() => setActiveSecondaryId(opt.id)}
+                />
+              );
+            })}
+          </div>
         </div>
-        <div className="flex gap-2">
-          {product.upholstery.map((color, i) => (
-            <SwatchBtn
-              key={color}
-              color={color}
-              active={activeUpholstery === i}
-              onClick={() => setActiveUpholstery(i)}
-            />
-          ))}
-        </div>
-      </div>
+      )}
 
 
 
       {/* CTAs */}
       <div className="flex flex-col gap-3">
         <Link
-          to={`/products/${product.slug}/ar`}
+          to={`/products/${product.slug}/ar?primary=${activePrimaryId || ""}&secondary=${activeSecondaryId || ""}`}
+          data-tour="detail-ar-btn"
           className="flex w-full items-center justify-center gap-2 rounded-full bg-[#1a1a1a] px-6 py-4 text-[11px] font-medium uppercase tracking-[0.22em] text-[#f5f3ef] transition-colors hover:bg-[#333]"
         >
           <Box size={15} />
@@ -452,14 +555,20 @@ function ProductInfoPanel({ product, activeFrame, setActiveFrame, activeUpholste
         </Link>
         <button
           type="button"
-          className="flex w-full items-center justify-center rounded-full border border-[#1a1a1a] bg-transparent px-6 py-4 text-[11px] font-medium uppercase tracking-[0.22em] text-[#1a1a1a] transition-colors hover:bg-[#1a1a1a] hover:text-[#f5f3ef]"
+          onClick={() => toggleWishlist(product.id)}
+          data-tour="detail-wishlist-btn"
+          className={`flex w-full items-center justify-center rounded-full border border-[#1a1a1a] px-6 py-4 text-[11px] font-medium uppercase tracking-[0.22em] transition-colors ${
+            wishlisted
+              ? "bg-[#1a1a1a] text-[#f5f3ef] hover:bg-transparent hover:text-[#1a1a1a]"
+              : "bg-transparent text-[#1a1a1a] hover:bg-[#1a1a1a] hover:text-[#f5f3ef]"
+          }`}
         >
-          Add to Wishlist
+          {wishlisted ? "Remove from Wishlist" : "Add to Wishlist"}
         </button>
       </div>
 
       {/* Specs */}
-      <div className="mt-6 grid grid-cols-3 gap-3 rounded-[16px] border border-[#e4ddd2] bg-white p-4">
+      <div data-tour="detail-specs" className="mt-6 grid grid-cols-3 gap-3 rounded-[16px] border border-[#e4ddd2] bg-white p-4">
         <div className="text-center">
           <p className="text-[9px] uppercase tracking-[0.16em] text-[#9a9389]">Dimensions</p>
           <p className="mt-1 text-[11px] font-medium text-[#1a1a1a]">
@@ -487,14 +596,25 @@ export default function ProductDetail() {
   const product = getProductBySlug(slug);
 
   const [activeThumb, setActiveThumb] = useState(0);
-  const [activeFrame, setActiveFrame] = useState(0);
+  const [activePrimaryId, setActivePrimaryId] = useState(null);
+  const [activeSecondaryId, setActiveSecondaryId] = useState(null);
 
   useEffect(() => {
     window.scrollTo({ top: 0, left: 0, behavior: "auto" });
   }, [slug]);
-  const [activeUpholstery, setActiveUpholstery] = useState(0);
 
-  const [wishlisted, setWishlisted] = useState(false);
+  useEffect(() => {
+    if (product) {
+      const params = new URLSearchParams(window.location.search);
+      const prim = params.get("primary");
+      const sec = params.get("secondary");
+      setActivePrimaryId(prim || null);
+      setActiveSecondaryId(sec || null);
+    }
+  }, [product]);
+
+  const { toggleWishlist, isInWishlist } = useWishlist();
+  const wishlisted = product ? isInWishlist(product.id) : false;
 
   const related = products
     .filter((p) => p.slug !== slug && p.category === product?.category)
@@ -572,13 +692,18 @@ export default function ProductDetail() {
           <div>
             {/* Main display — photo OR 3D viewer */}
             <div
+              data-tour="detail-viewer"
               className="relative overflow-hidden bg-[#ede9e3] lg:rounded-[24px]"
               style={{ aspectRatio: "4 / 3" }}
             >
               {activeThumb === thumbnails.indexOf(VIEWER_SLOT) ? (
                 /* ── 3D Interactive Viewer ── */
                 <>
-                  <Model3DViewer modelId={product.modelId} />
+                  <Model3DViewer
+                    modelId={product.modelId}
+                    activePrimaryId={activePrimaryId}
+                    activeSecondaryId={activeSecondaryId}
+                  />
                   {/* 3D badge */}
                   <span className="absolute left-4 top-4 rounded-full bg-[#1a1a1a]/80 px-3 py-1 text-[10px] font-medium uppercase tracking-[0.18em] text-white backdrop-blur-sm">
                     3D View
@@ -623,7 +748,7 @@ export default function ProductDetail() {
                   {/* Wishlist */}
                   <button
                     type="button"
-                    onClick={() => setWishlisted((v) => !v)}
+                    onClick={() => toggleWishlist(product.id)}
                     className="absolute right-4 top-4 flex h-10 w-10 items-center justify-center rounded-full bg-white/90 text-[#1a1a1a] shadow-md backdrop-blur-sm transition-transform hover:scale-110"
                     aria-label="Toggle wishlist"
                   >
@@ -643,7 +768,7 @@ export default function ProductDetail() {
             </div>
 
             {/* Thumbnail strip */}
-            <div className="flex gap-2.5 bg-[#f5f3ef] px-4 py-3 sm:px-6 lg:px-0 lg:pt-3">
+            <div data-tour="detail-thumbnails" className="flex gap-2.5 bg-[#f5f3ef] px-4 py-3 sm:px-6 lg:px-0 lg:pt-3">
               {thumbnails.map((src, i) => {
                 const is3D = src === VIEWER_SLOT;
                 const isActive = activeThumb === i;
@@ -684,10 +809,10 @@ export default function ProductDetail() {
           <div className="bg-[#f5f3ef] px-4 py-6 sm:px-6 lg:sticky lg:top-24 lg:self-start lg:rounded-[24px] lg:border lg:border-[#e4ddd2] lg:bg-white lg:px-7 lg:py-8 lg:shadow-[0_20px_50px_rgba(26,26,26,0.06)]">
             <ProductInfoPanel
               product={product}
-              activeFrame={activeFrame}
-              setActiveFrame={setActiveFrame}
-              activeUpholstery={activeUpholstery}
-              setActiveUpholstery={setActiveUpholstery}
+              activePrimaryId={activePrimaryId}
+              setActivePrimaryId={setActivePrimaryId}
+              activeSecondaryId={activeSecondaryId}
+              setActiveSecondaryId={setActiveSecondaryId}
             />
           </div>
         </div>
