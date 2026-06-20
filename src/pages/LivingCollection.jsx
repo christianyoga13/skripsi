@@ -154,8 +154,8 @@ export default function LivingCollections() {
               </p>
             </div>
 
-            <div className="grid grid-cols-2 gap-3 text-left">
-              <div className="rounded-2xl border border-[#e5dfd5] bg-white/70 px-4 py-4">
+            <div className="flex flex-wrap gap-3 text-left shrink-0">
+              <div className="min-w-[100px] rounded-2xl border border-[#e5dfd5] bg-white/70 px-4 py-4">
                 <p className="text-[10px] uppercase tracking-[0.2em] text-[#9a9389]">
                   Showing
                 </p>
@@ -163,7 +163,7 @@ export default function LivingCollections() {
                   {String(visibleProducts.length).padStart(2, "0")}
                 </p>
               </div>
-              <div className="rounded-2xl border border-[#e5dfd5] bg-white/70 px-4 py-4">
+              <div className="min-w-[160px] rounded-2xl border border-[#e5dfd5] bg-white/70 px-4 py-4">
                 <p className="text-[10px] uppercase tracking-[0.2em] text-[#9a9389]">
                   Category
                 </p>

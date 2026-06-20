@@ -855,7 +855,7 @@ export default function ProductAR() {
 
           {/* Active-object indicator */}
           {arStatus === "placed" && !activeTab && (
-            <div className="mb-2 flex items-center justify-between gap-2 animate-[slideUp_0.3s_ease-out_forwards]">
+            <div className="mb-2 flex items-center justify-start gap-3 animate-[slideUp_0.3s_ease-out_forwards] pl-1">
               <div className="flex items-center gap-2 rounded-full bg-black/40 px-3 py-1.5 backdrop-blur-md">
                 <span className="text-base leading-none">{modelConfig.icon}</span>
                 <div>
