@@ -139,7 +139,7 @@ export default function LivingCollections() {
 
         {/* ── Main content ────────────────────────────────── */}
         <main className="flex-1 overflow-hidden rounded-[28px] border border-[#e4ddd2] bg-[#f8f6f2] px-5 py-6 shadow-[0_24px_60px_rgba(26,26,26,0.06)] sm:px-8 sm:py-8">
-          <div className="mb-10 grid gap-6 border-b border-[#e0dbd2] pb-8 lg:grid-cols-[minmax(0,1fr)_240px] lg:items-end">
+          <div className="mb-10 flex flex-col gap-6 border-b border-[#e0dbd2] pb-8 lg:flex-row lg:items-end lg:justify-between">
             <div data-tour="collection-title">
               <p className="mb-3 text-[11px] uppercase tracking-[0.3em] text-[#8f877c]">
                 Curated Interior Objects
@@ -154,7 +154,7 @@ export default function LivingCollections() {
               </p>
             </div>
 
-            <div className="flex flex-wrap gap-3 text-left shrink-0">
+            <div className="flex gap-3 text-left shrink-0">
               <div className="min-w-[100px] rounded-2xl border border-[#e5dfd5] bg-white/70 px-4 py-4">
                 <p className="text-[10px] uppercase tracking-[0.2em] text-[#9a9389]">
                   Showing
