@@ -3,7 +3,7 @@ import { createPortal } from "react-dom";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import * as THREE from "three";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
-import { X, Info, Layers, Palette, Box } from "lucide-react";
+import { X, Info, Layers, Palette, Box, Trash2 } from "lucide-react";
 
 // ─── GLB model imports ─────────────────────────────────────────────────────────
 import couchModel        from "../assets/couch1.glb";
@@ -31,7 +31,7 @@ const AR_MODELS = [
   { id: "sofa2",     label: "Velo Chaise Sofa",       modelUrl: couch2Model,       initialScale: 1, icon: "🛋️", group: "Ruang Tamu"  },
   { id: "table",     label: "Terra Dining Table",     modelUrl: tableModel,        initialScale: 1, icon: "🍽️", group: "Ruang Makan" },
   { id: "table1",    label: "Solstice Dining Table",  modelUrl: table1Model,       initialScale: 1, icon: "🍽️", group: "Ruang Makan" },
-  { id: "coffeetbl", label: "Meridian Coffee Table",  modelUrl: coffeeTableModel,  initialScale: 1, icon: "☕",  group: "Ruang Tamu"  },
+  { id: "coffeetbl", label: "Meridian Coffee Table",  modelUrl: coffeeTableModel,  initialScale: 0.4, icon: "☕",  group: "Ruang Tamu"  },
   { id: "bed",       label: "Haven King Bed",         modelUrl: bedModel,          initialScale: 1, icon: "🛏️", group: "Kamar Tidur" },
   { id: "bed1",      label: "Nordic Platform Bed",    modelUrl: bed1Model,         initialScale: 1, icon: "🛏️", group: "Kamar Tidur" },
   { id: "desk",      label: "Scholar Study Desk",     modelUrl: studydeskModel,    initialScale: 1, icon: "📖", group: "Kamar Tidur" },
@@ -131,6 +131,7 @@ function buildFurnitureScene({
   applyPrimaryRef, applySecondaryRef,
   notifyModelChangeRef,
   onModelSelect,
+  deleteActiveObjectRef,
 }) {
   let camera, sceneRef, floorMarker;
   let activeObject           = null;
@@ -151,6 +152,19 @@ function buildFurnitureScene({
   let allTextures = { woodTextures: null, fabricTextures: null, tableclothTextures: null };
 
   // ── Apply slot helpers ───────────────────────────────────────────────────
+  // Expose delete method
+  deleteActiveObjectRef.current = () => {
+    if (activeObject) {
+      sceneRef.remove(activeObject.root);
+      placedObjects.delete(activeObject.id);
+      activeObject = null;
+      activeObjectRef.current = null;
+      if (placedObjects.size === 0) {
+        onStatusChange("scanning");
+      }
+    }
+  };
+
   const applyPrimarySlot = (optionId, modelId) => {
     const id = modelId ?? selectedModelRef.current;
     const placed = placedObjects.get(id); if (!placed) return;
@@ -368,7 +382,7 @@ function buildFurnitureScene({
       if (!target?.root.visible) return;
       const dist  = getTouchDistance(e.touches);
       const angle = getTouchAngle(e.touches);
-      const next  = THREE.MathUtils.clamp(gestureStart.scale * (dist / gestureStart.distance), 0.35, 2.5);
+      const next  = THREE.MathUtils.clamp(gestureStart.scale * (dist / gestureStart.distance), 0.1, 3.5);
       target.scale = next;
       target.root.scale.setScalar(next);
       target.root.rotation.y = gestureStart.rotationY - (angle - gestureStart.angle);
@@ -568,6 +582,7 @@ export default function ProductAR() {
   const applySecondaryRef      = useRef(null);
   const snapshotRef            = useRef(null);
   const notifyModelChangeRef   = useRef(null);
+  const deleteActiveObjectRef  = useRef(null);
   // Mutable refs holding latest selections (used inside AR scene closures)
   const primarySelectionsRef   = useRef(initSelections("primarySlot"));
   const secondarySelectionsRef = useRef(initSelections("secondarySlot"));
@@ -644,6 +659,7 @@ export default function ProductAR() {
             applyPrimaryRef, applySecondaryRef,
             snapshotRef,
             notifyModelChangeRef,
+            deleteActiveObjectRef,
             onModelSelect: (modelId) => onModelSelectRef.current?.(modelId),
           }),
         ]);
@@ -847,6 +863,16 @@ export default function ProductAR() {
                   <p className="text-[11px] font-semibold leading-tight text-white">{modelConfig.label}</p>
                 </div>
               </div>
+              <button
+                type="button"
+                onClick={() => {
+                  deleteActiveObjectRef.current?.();
+                }}
+                className="flex h-9 w-9 items-center justify-center rounded-full bg-red-500/90 text-white shadow-md backdrop-blur-md transition-transform active:scale-95"
+                aria-label="Hapus objek"
+              >
+                <Trash2 size={16} />
+              </button>
             </div>
           )}
 
