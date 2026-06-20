@@ -886,7 +886,7 @@ export default function ProductAR() {
                 {TABS.map((tab) => {
                   const active = activeTab === tab;
                   return (
-                    <button key={tab} onClick={() => toggleTab(tab)} className="flex flex-col items-center gap-1">
+                    <button key={tab} data-tour={`ar-tab-${tab}`} onClick={() => toggleTab(tab)} className="flex flex-col items-center gap-1">
                       <span className={`flex items-center justify-center rounded-full font-semibold leading-tight transition-all duration-200 ${
                         active
                           ? "h-12 w-12 border-2 border-[#1a1a1a] bg-[#2c2c2c] text-white shadow-lg"

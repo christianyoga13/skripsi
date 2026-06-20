@@ -56,6 +56,11 @@ const getTourSteps = (isMobile) => ({
       description: "Pilih thumbnail gambar biasa, atau ketuk kotak berlabel '3D' untuk memuat model 3D interaktif pada panel visualizer utama."
     },
     {
+      selector: '[data-tour="detail-customizer"]',
+      title: "Kustomisasi Bebas",
+      description: "Ubah warna dan material di sini! Setiap perubahan akan langsung terlihat pada model 3D interaktif di atas."
+    },
+    {
       selector: '[data-tour="detail-ar-btn"]',
       title: "Proyeksikan dengan AR",
       description: "Gunakan tombol ini di smartphone Anda untuk memproyeksikan furniture dalam ukuran nyata (1:1) ke dalam ruangan Anda menggunakan kamera."
@@ -73,9 +78,19 @@ const getTourSteps = (isMobile) => ({
       description: "Arahkan kamera ke permukaan lantai datar yang terang, lalu ketuk layar untuk menempatkan furniture di posisi tersebut."
     },
     {
-      selector: '[data-tour="ar-customize"]',
-      title: "Kustomisasi Material",
-      description: "Ubah finishing kayu/logam (Tab Material) dan warna kain pelapis (Tab Warna) secara instan untuk mencocokkan dengan ruangan Anda."
+      selector: '[data-tour="ar-tab-object"]',
+      title: "Pilih Furniture",
+      description: "Ketuk tab ini untuk mengganti model 3D furniture yang ingin Anda proyeksikan ke ruangan."
+    },
+    {
+      selector: '[data-tour="ar-tab-material"]',
+      title: "Ubah Material Rangka",
+      description: "Sesuaikan jenis finishing kayu atau logam dari furniture agar serasi dengan nuansa interior Anda."
+    },
+    {
+      selector: '[data-tour="ar-tab-warna"]',
+      title: "Ganti Warna Kain",
+      description: "Eksplorasi berbagai pilihan warna dan tekstur kain pelapis untuk mendapatkan kombinasi yang sempurna."
     }
   ],
   "/wishlist": [
@@ -108,6 +123,7 @@ export default function OnboardingTour() {
   const [activeStep, setActiveStep] = useState(0);
   const [highlightRect, setHighlightRect] = useState(null);
   const [isMobile, setIsMobile] = useState(isMobileDevice());
+  const clickedStepRef = useRef(null);
 
   // Listen to resize events to update mobile status dynamically
   useEffect(() => {
@@ -258,6 +274,7 @@ export default function OnboardingTour() {
 
     const step = currentSteps[activeStep];
     const isAtelierMobileStep = step?.selector === '[data-tour="header-atelier-mobile"]';
+    const isArTab = step?.selector?.startsWith('[data-tour="ar-tab-');
 
     if (isAtelierMobileStep) {
       // Ensure drawer is open
@@ -269,6 +286,12 @@ export default function OnboardingTour() {
         if (hamburger) {
           hamburger.click();
         }
+      }
+    } else if (isArTab) {
+      if (clickedStepRef.current !== activeStep) {
+        const tabBtn = document.querySelector(step.selector);
+        if (tabBtn) tabBtn.click();
+        clickedStepRef.current = activeStep;
       }
     } else {
       // Ensure drawer is closed for other steps
@@ -285,6 +308,7 @@ export default function OnboardingTour() {
   const handleStartTour = () => {
     setIsActive(true);
     setActiveStep(0);
+    clickedStepRef.current = null;
   };
 
   const handleNext = () => {

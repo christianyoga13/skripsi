@@ -486,6 +486,7 @@ function ProductInfoPanel({
 
       <div className="my-5 h-px bg-[#e4ddd2]" />
 
+      <div data-tour="detail-customizer">
       {/* Frame finish (Primary Slot) */}
       {slots?.primarySlot && (
         <div className="mb-4">
@@ -541,6 +542,7 @@ function ProductInfoPanel({
           </div>
         </div>
       )}
+      </div>
 
 
 
