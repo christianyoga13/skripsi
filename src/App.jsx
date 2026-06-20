@@ -1,4 +1,4 @@
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { HashRouter, Route, Routes } from "react-router-dom";
 import Home from "./pages/Home";
 import LivingCollections from "./pages/LivingCollection";
 import ProductAR from "./pages/ProductAR";
@@ -10,7 +10,7 @@ import OnboardingTour from "./components/OnboardingTour";
 function App() {
   return (
     <WishlistProvider>
-      <BrowserRouter>
+      <HashRouter>
         <OnboardingTour />
         <Routes>
           <Route path="/" element={<Home />} />
@@ -19,7 +19,7 @@ function App() {
           <Route path="/products/:slug" element={<ProductDetail />} />
           <Route path="/wishlist" element={<Wishlist />} />
         </Routes>
-      </BrowserRouter>
+      </HashRouter>
     </WishlistProvider>
   );
 }
