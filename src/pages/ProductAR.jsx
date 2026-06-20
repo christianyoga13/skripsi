@@ -371,7 +371,7 @@ function buildFurnitureScene({
       const next  = THREE.MathUtils.clamp(gestureStart.scale * (dist / gestureStart.distance), 0.35, 2.5);
       target.scale = next;
       target.root.scale.setScalar(next);
-      target.root.rotation.y = gestureStart.rotationY + (angle - gestureStart.angle);
+      target.root.rotation.y = gestureStart.rotationY - (angle - gestureStart.angle);
     }
   };
 
