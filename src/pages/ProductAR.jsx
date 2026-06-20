@@ -531,21 +531,23 @@ export default function ProductAR() {
   const [activeTab,           setActiveTab]          = useState(null);
   const [showInfo,            setShowInfo]           = useState(false);
   const bottomPanelRef      = useRef(null);
+  const menuContainerRef    = useRef(null);
 
   useEffect(() => {
-    if (!bottomPanelRef.current) return;
+    if (!menuContainerRef.current) return;
     const observer = new ResizeObserver((entries) => {
       for (let entry of entries) {
         const height = entry.borderBoxSize?.[0]?.blockSize ?? entry.contentRect.height;
-        document.documentElement.style.setProperty('--bottom-panel-height', `${height}px`);
+        const offset = inAppBrowser ? Math.max(browserBottomOffset, 72) : browserBottomOffset;
+        document.documentElement.style.setProperty('--bottom-panel-height', `${height + offset}px`);
       }
     });
-    observer.observe(bottomPanelRef.current);
+    observer.observe(menuContainerRef.current);
     return () => {
       observer.disconnect();
       document.documentElement.style.removeProperty('--bottom-panel-height');
     };
-  }, []);
+  }, [inAppBrowser, browserBottomOffset]);
 
   // Per-model primary/secondary selections: { [modelId]: optionId }
   // Initialize with defaults from MODEL_SLOTS
@@ -851,7 +853,7 @@ export default function ProductAR() {
           {/* Expanded panel */}
           <div className={`grid transition-[grid-template-rows] duration-500 ease-[cubic-bezier(0.2,0.8,0.2,1)] ${activeTab ? "grid-rows-[1fr]" : "grid-rows-[0fr]"}`}>
             <div className="overflow-hidden">
-              <div className="mb-2 overflow-hidden rounded-3xl bg-[#f0eeec]/96 shadow-2xl backdrop-blur-2xl animate-[slideUp_0.3s_ease-out_forwards]">
+              <div ref={menuContainerRef} className="mb-2 overflow-hidden rounded-3xl bg-[#f0eeec]/96 shadow-2xl backdrop-blur-2xl animate-[slideUp_0.3s_ease-out_forwards]">
 
               {/* Tab bar */}
               <div className="flex items-end justify-around px-6 py-4">
