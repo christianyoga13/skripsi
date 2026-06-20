@@ -465,6 +465,7 @@ function ProductInfoPanel({
   const { toggleWishlist, isInWishlist } = useWishlist();
   const wishlisted = isInWishlist(product.id);
   const slots = MODEL_SLOTS[product.modelId];
+  const navigate = useNavigate();
 
   return (
     <div>
