@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useLocation } from "react-router-dom";
 import { ChevronLeft, ChevronRight, HelpCircle, X } from "lucide-react";
 
