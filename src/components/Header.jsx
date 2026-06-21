@@ -4,8 +4,8 @@ import { Menu, Heart, X } from "lucide-react";
 import { useWishlist } from "../context/WishlistContext";
 
 const menuItems = [
-  { label: "The Edit", to: "/" },
-  { label: "Atelier", to: "/products" },
+  { label: "Home", to: "/" },
+  { label: "Collections", to: "/products" },
 ];
 
 export default function Header() {

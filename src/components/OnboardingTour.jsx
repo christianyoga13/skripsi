@@ -16,8 +16,8 @@ const getTourSteps = (isMobile) => ({
     },
     {
       selector: isMobile ? '[data-tour="header-atelier-mobile"]' : '[data-tour="header-atelier"]',
-      title: "Jelajahi Atelier",
-      description: "Silakan kunjungi halaman 'Atelier' untuk menjelajahi seluruh katalog furniture, menyaring material, dan melakukan kustomisasi warna."
+      title: "Jelajahi Collections",
+      description: "Silakan kunjungi halaman 'Collections' untuk menjelajahi seluruh katalog furniture, menyaring material, dan melakukan kustomisasi warna."
     },
     {
       selector: '[data-tour="header-wishlist"]',
@@ -91,6 +91,11 @@ const getTourSteps = (isMobile) => ({
       selector: '[data-tour="ar-tab-warna"]',
       title: "Ganti Warna Kain",
       description: "Eksplorasi berbagai pilihan warna dan tekstur kain pelapis untuk mendapatkan kombinasi yang sempurna."
+    },
+    {
+      selector: '[data-tour="ar-tab-warna"]',
+      title: "Menutup Panel",
+      description: "Ketuk kembali tab yang sedang aktif untuk menutup panel ke bawah agar Anda bisa melihat tampilan AR secara penuh."
     }
   ],
   "/wishlist": [
