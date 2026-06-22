@@ -425,8 +425,7 @@ function buildFurnitureScene({
       camera = xrCamera; sceneRef = scene;
       if ("outputColorSpace" in renderer) renderer.outputColorSpace = THREE.SRGBColorSpace;
       
-      // OPTIMIZATION: Reduce pixel ratio and disable heavy processing for low-end devices
-      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.25));
+      // OPTIMIZATION: Reduce heavy processing for low-end devices
       renderer.shadowMap.enabled = false;
       renderer.powerPreference = "high-performance";
 
