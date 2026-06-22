@@ -3,6 +3,7 @@ import { createPortal } from "react-dom";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import * as THREE from "three";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
+import { MeshoptDecoder } from "three/examples/jsm/libs/meshopt_decoder.module.js";
 import { X, Info, Layers, Palette, Box, Trash2 } from "lucide-react";
 
 // ─── GLB model imports ─────────────────────────────────────────────────────────
@@ -24,7 +25,7 @@ import diningTable1Model from "../assets/dining table1.glb";
 import diningTable2Model from "../assets/dining table2.glb";
 
 import { getProductBySlug } from "../data/products";
-import { FABRIC_URLS, TABLECLOTH_URLS, WOOD_URLS, PLASTIC_URLS, WOOD47_URLS, FRAME_OPTIONS, FABRIC_OPTIONS, TABLECLOTH_OPTIONS, BODY_OPTIONS, PLASTIC_OPTIONS, MARBLE_OPTIONS, GLASS_OPTIONS, LEATHER_OPTIONS, MODEL_SLOTS, loadTextureSet, buildMaterialFromOption, applySlotToModel } from '../lib/customizer';
+import { FABRIC_URLS, TABLECLOTH_URLS, WOOD_URLS, MODEL_SLOTS, loadTextureSet, buildMaterialFromOption, applySlotToModel } from '../lib/customizer';
 
 const AR_MODELS = [
   { id: "sofa",      label: "Aura Modular Sofa",      modelUrl: couchModel,        initialScale: 1, icon: "🛋️", group: "Ruang Tamu"  },
@@ -423,6 +424,11 @@ function buildFurnitureScene({
       const { scene, camera: xrCamera, renderer } = window.XR8.Threejs.xrScene();
       camera = xrCamera; sceneRef = scene;
       if ("outputColorSpace" in renderer) renderer.outputColorSpace = THREE.SRGBColorSpace;
+      
+      // OPTIMIZATION: Reduce pixel ratio and disable heavy processing for low-end devices
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.25));
+      renderer.shadowMap.enabled = false;
+      renderer.powerPreference = "high-performance";
 
       scene.add(new THREE.HemisphereLight(0xffffff, 0x5d5d66, 1.3));
       const dLight = new THREE.DirectionalLight(0xffffff, 1.2);
@@ -478,6 +484,7 @@ function buildFurnitureScene({
       });
 
       glbLoader = new GLTFLoader();
+      glbLoader.setMeshoptDecoder(MeshoptDecoder);
       glbLoader.setRequestHeader({ "ngrok-skip-browser-warning": "69420" });
       const initConfig = models.find((m) => m.id === selectedModelRef.current) ?? models[0];
       lazyLoadModel(initConfig);

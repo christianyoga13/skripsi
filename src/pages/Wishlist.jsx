@@ -1,13 +1,12 @@
-import React from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Heart, Trash2, ArrowLeft, ArrowRight } from "lucide-react";
+import { Heart, Trash2, ArrowRight } from "lucide-react";
 import Header from "../components/Header";
 import { products } from "../data/products";
 import { useWishlist } from "../context/WishlistContext";
 
 export default function Wishlist() {
   const navigate = useNavigate();
-  const { wishlist, toggleWishlist, clearWishlist, isInWishlist } = useWishlist();
+  const { toggleWishlist, clearWishlist, isInWishlist } = useWishlist();
 
   // Filter products that are in the wishlist
   const wishlistedProducts = products.filter((product) => isInWishlist(product.id));

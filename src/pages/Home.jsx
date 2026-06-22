@@ -4,7 +4,6 @@ import Header from "../components/Header";
 import CategoryCard from "../components/CategoryCard";
 import ProductCard from "../components/ProductCard";
 import { products } from "../data/products";
-import interiorImg from "../assets/interior design.webp";
 import aboutUsImg from "../assets/about-us.jpg";
 import livingImg from "../assets/product-image/living.webp";
 import bedroomImg from "../assets/product-image/bedroom.webp";

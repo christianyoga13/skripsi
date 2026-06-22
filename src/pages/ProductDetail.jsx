@@ -3,6 +3,7 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import { ArrowLeft, Box, ChevronRight, Heart, RotateCcw, Star } from "lucide-react";
 import * as THREE from "three";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
+import { MeshoptDecoder } from "three/examples/jsm/libs/meshopt_decoder.module.js";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import { RoomEnvironment } from "three/examples/jsm/environments/RoomEnvironment.js";
 import Header from "../components/Header";
@@ -205,6 +206,7 @@ function Model3DViewer({ modelId, activePrimaryId, activeSecondaryId, className 
 
     // ── Load GLB — use embedded materials, do NOT override anything ───
     const loader = new GLTFLoader();
+    loader.setMeshoptDecoder(MeshoptDecoder);
     let animId;
 
     loader.load(
@@ -218,7 +220,7 @@ function Model3DViewer({ modelId, activePrimaryId, activeSecondaryId, className 
           node.castShadow    = true;
           node.receiveShadow = true;
 
-          const fixMaterial = (mat, index) => {
+          const fixMaterial = (mat) => {
             if (!mat) return mat;
 
             // ── Known broken material: GWC_Cupboard_05 ─────────────────────

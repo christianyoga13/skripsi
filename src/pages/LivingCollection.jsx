@@ -60,7 +60,7 @@ export default function LivingCollections() {
   });
 
   // Sidebar inner content – reused in both desktop & mobile drawer
-  function FilterContent({ onClose }) {
+  const renderFilterContent = (onClose) => {
     return (
       <>
         <div className="mb-6 flex items-center justify-between border-b border-[#e4ddd2] pb-4">
@@ -123,7 +123,7 @@ export default function LivingCollections() {
             filterOpen ? "translate-x-0" : "-translate-x-full"
           }`}
         >
-          <FilterContent onClose={() => setFilterOpen(false)} />
+          {renderFilterContent(() => setFilterOpen(false))}
         </div>
       </div>
 
@@ -134,7 +134,7 @@ export default function LivingCollections() {
           className="collection-sidebar hidden lg:sticky lg:block lg:w-[240px] lg:self-start lg:max-h-[calc(100vh-2rem)] lg:overflow-y-auto transition-all duration-300"
           style={{ top: navVisible ? "6rem" : "1rem" }}
         >
-          <FilterContent />
+          {renderFilterContent(null)}
         </aside>
 
         {/* ── Main content ────────────────────────────────── */}
