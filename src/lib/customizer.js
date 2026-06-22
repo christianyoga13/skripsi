@@ -170,14 +170,6 @@ export const MODEL_SLOTS = {
   },
   table1: {
     primarySlot: {
-      label: "Material Meja",
-      icon: "🪵",
-      options: [...FRAME_OPTIONS.filter(o => o.type === "wood"), ...MARBLE_OPTIONS, ...GLASS_OPTIONS],
-      defaultId: "wood-natural",
-      matTarget: { matNames: ["table"] },
-      textureSet: "wood",
-    },
-    secondarySlot: {
       label: "Warna Kaki/Besi",
       icon: "⚙️",
       options: FRAME_OPTIONS.filter(o => o.type === "metal"),
@@ -185,6 +177,7 @@ export const MODEL_SLOTS = {
       matTarget: { matNames: ["steel"] },
       textureSet: null,
     },
+    secondarySlot: null,
   },
   coffeetbl: {
     primarySlot: {
