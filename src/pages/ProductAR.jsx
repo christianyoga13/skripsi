@@ -24,14 +24,14 @@ import diningTableModel  from "../assets/dining table.glb";
 import diningTable1Model from "../assets/dining table1.glb";
 import diningTable2Model from "../assets/dining table2.glb";
 
-import { getProductBySlug } from "../data/products";
+import { getProductBySlug, products } from "../data/products";
 import { FABRIC_URLS, TABLECLOTH_URLS, WOOD_URLS, MODEL_SLOTS, loadTextureSet, buildMaterialFromOption, applySlotToModel } from '../lib/customizer';
 
 const AR_MODELS = [
   { id: "sofa",      label: "Aura Modular Sofa",      modelUrl: couchModel,        initialScale: 1, icon: "🛋️", group: "Ruang Tamu"  },
   { id: "sofa2",     label: "Velo Chaise Sofa",       modelUrl: couch2Model,       initialScale: 1, icon: "🛋️", group: "Ruang Tamu"  },
-  { id: "table",     label: "Terra Dining Table",     modelUrl: tableModel,        initialScale: 1, icon: "🍽️", group: "Ruang Makan" },
-  { id: "table1",    label: "Solstice Dining Table",  modelUrl: table1Model,       initialScale: 1, icon: "🍽️", group: "Ruang Makan" },
+  { id: "table",     label: "Terra Table",            modelUrl: tableModel,        initialScale: 1, icon: "🪨", group: "Ruang Tamu" },
+  { id: "table1",    label: "Solstice Table",         modelUrl: table1Model,       initialScale: 1, icon: "🪵", group: "Ruang Tamu" },
   { id: "coffeetbl", label: "Meridian Coffee Table",  modelUrl: coffeeTableModel,  initialScale: 0.4, icon: "☕",  group: "Ruang Tamu"  },
   { id: "bed",       label: "Haven King Bed",         modelUrl: bedModel,          initialScale: 1, icon: "🛏️", group: "Kamar Tidur" },
   { id: "bed1",      label: "Nordic Platform Bed",    modelUrl: bed1Model,         initialScale: 1, icon: "🛏️", group: "Kamar Tidur" },
@@ -767,6 +767,42 @@ export default function ProductAR() {
   const currentPrimaryId   = primarySelections[selectedModel]   ?? primarySlot?.defaultId;
   const currentSecondaryId = secondarySelections[selectedModel] ?? secondarySlot?.defaultId;
 
+  const renderDynamicIcon = (tab) => {
+    if (tab === "object") {
+      const objProduct = products.find((p) => p.modelId === selectedModel);
+      if (objProduct?.image) {
+        return (
+          <div className="h-full w-full overflow-hidden rounded-full bg-[#ede9e3]">
+            <img src={objProduct.image} alt="object" className="h-full w-full object-cover mix-blend-multiply" />
+          </div>
+        );
+      }
+    } else if (tab === "material" && hasPrimary) {
+      const opt = primarySlot?.options?.find((o) => o.id === currentPrimaryId);
+      if (opt?.image) {
+        return (
+          <div className="h-full w-full overflow-hidden rounded-full border border-black/10">
+            <img src={opt.image} alt="material" className="h-full w-full object-cover" />
+          </div>
+        );
+      } else if (opt?.color) {
+        return <div className="h-full w-full rounded-full border border-black/10" style={{ backgroundColor: opt.color }} />;
+      }
+    } else if (tab === "warna" && hasSecondary) {
+      const opt = secondarySlot?.options?.find((o) => o.id === currentSecondaryId);
+      if (opt?.image) {
+        return (
+          <div className="h-full w-full overflow-hidden rounded-full border border-black/10">
+            <img src={opt.image} alt="warna" className="h-full w-full object-cover" />
+          </div>
+        );
+      } else if (opt?.color) {
+        return <div className="h-full w-full rounded-full border border-black/10" style={{ backgroundColor: opt.color }} />;
+      }
+    }
+    return ICONS[tab];
+  };
+
   const arOverlay = (
     <>
       {/* ── Top bar ─────────────────────────────────────────────────────── */}
@@ -898,7 +934,7 @@ export default function ProductAR() {
                           ? "h-12 w-12 border-2 border-[#1a1a1a] bg-[#2c2c2c] text-white shadow-lg"
                           : "h-10 w-10 bg-[#c6c4c1] text-[#3a3a3a]"
                       }`}>
-                        {ICONS[tab]}
+                        {renderDynamicIcon(tab)}
                       </span>
                       <span className={`text-[10px] ${active ? "font-bold text-[#1a1a1a]" : "font-medium text-[#888]"}`}>
                         {TAB_LABEL[tab]}
@@ -916,21 +952,29 @@ export default function ProductAR() {
                 {/* ── Object grid ──────────────────────────────────────── */}
                 {activeTab === "object" && (
                   <div className="grid grid-cols-3 gap-2 p-3 pb-[calc(env(safe-area-inset-bottom)+0.75rem)]">
-                    {AR_MODELS.map((m) => (
+                    {AR_MODELS.map((m) => {
+                      const productImg = products.find(p => p.modelId === m.id)?.image;
+                      return (
                       <button key={m.id}
                         onClick={() => {
                           setSelectedModel(m.id);
                           selectedModelRef.current = m.id;
                           notifyModelChangeRef.current?.();
                         }}
-                        className={`flex flex-col items-center justify-center gap-1.5 rounded-2xl border-2 bg-white py-3 px-2 transition-all ${
+                        className={`flex flex-col items-center justify-center gap-2 rounded-2xl border-2 bg-white py-3 px-2 transition-all ${
                           selectedModel === m.id ? "border-[#1a1a1a] shadow-md" : "border-transparent shadow-sm"
                         }`}>
-                        <span className="text-3xl leading-none">{m.icon}</span>
+                        {productImg ? (
+                          <div className="h-12 w-12 overflow-hidden rounded-xl bg-[#ede9e3]">
+                            <img src={productImg} alt={m.label} className="h-full w-full object-cover mix-blend-multiply" />
+                          </div>
+                        ) : (
+                          <span className="text-3xl leading-none">{m.icon}</span>
+                        )}
                         <span className="text-center text-[10px] font-semibold leading-tight text-[#1a1a1a]">{m.label}</span>
                         <span className="text-[8px] text-[#aaa]">{m.group}</span>
                       </button>
-                    ))}
+                    )})}
                   </div>
                 )}
 
@@ -1016,7 +1060,7 @@ export default function ProductAR() {
                 return (
                   <button key={tab} onClick={() => toggleTab(tab)} className="relative flex flex-col items-center gap-1">
                     <span className="flex h-10 w-10 items-center justify-center rounded-full bg-white/22 text-white transition-all duration-200 hover:bg-white/40 active:scale-95">
-                      {ICONS[tab]}
+                      {renderDynamicIcon(tab)}
                     </span>
                     {/* Green dot indicator if customizable */}
                     {hasThisSlot && tab !== "object" && (
