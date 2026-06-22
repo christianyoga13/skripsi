@@ -170,11 +170,11 @@ export const MODEL_SLOTS = {
   },
   table1: {
     primarySlot: {
-      label: "Warna Kaki/Besi",
-      icon: "⚙️",
-      options: FRAME_OPTIONS.filter(o => o.type === "metal"),
+      label: "Warna Atasan",
+      icon: "🪨",
+      options: [...FRAME_OPTIONS.filter(o => o.type === "metal"), ...GLASS_OPTIONS, ...MARBLE_OPTIONS],
       defaultId: "metal-silver",
-      matTarget: { matNames: ["steel"] },
+      matTarget: { matNames: ["table"], tintOnly: true },
       textureSet: null,
     },
     secondarySlot: null,
